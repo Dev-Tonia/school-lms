@@ -1,0 +1,16 @@
+{
+  "name": "dev-tonia/workopia",
+  "description": "Job listing application",
+  "authors": [
+    {
+      "name": "Dev Tonia",
+      "email": "ogunwatonia01@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Framework\\": "Framework/",
+      "App\\": "App/"
+    }
+  }
+}

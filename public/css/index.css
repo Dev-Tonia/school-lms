@@ -1,0 +1,22 @@
+body {
+  background-color: rgba(248, 248, 248);
+  color: rgba(85, 85, 85);
+  /* font-family:  */
+  --bs-body-font-family: "Raleway", sans-serif;
+}
+a {
+  color: rgba(85, 85, 85);
+}
+
+.card-wrapper .card {
+  border: none;
+  height: 128px;
+  transition: transform 0.3s; /* Animation */
+}
+.card-wrapper .card:hover {
+  transform: scale(1.07);
+}
+.pdf {
+  height: 50vh;
+  overflow: hidden;
+}
