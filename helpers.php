@@ -76,28 +76,7 @@ function inspectAndDie($value)
     echo '</pre>';
 }
 
-/**
- * Format Salary
- *
- * @param string $salary
- * @return string Formatted salary 
- */
-function formatSalary($salary)
-{
-    return '$' . number_format(floatval($salary));
-}
 
-/**
- * Sanitize Data and remove any special character
- *
- * @param string $dirty
- * @return  void
- * 
- */
-function sanitize($dirty)
-{
-    return filter_var(trim($dirty), FILTER_SANITIZE_SPECIAL_CHARS);
-}
 /**
  * Redirect to a given url
  * @param string $url
