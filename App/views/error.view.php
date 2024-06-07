@@ -8,7 +8,7 @@ loadPartial('navbar');
         <p class="text-center text-2xl mb-4">
             <?= $message ?>
         </p>
-        <a class="block text-center" href="/">Go Back To Listings</a>
+        <a class="block text-center" href="/">Go Back To Home</a>
     </div>
 </section>
 <?php
