@@ -52,7 +52,6 @@ loadPartial('sidebar');
                     </h5>
                     <div>
                         <div class="pdf position-relative">
-                            <!-- <object data="" class=" position-absolute" type="application/pdf"  style=" object: outline: none;"> -->
                             <iframe src="/upload/<?= $submission->file_path ?>" width="100%" height="100%" frameborder="0" class=" overflow-hidden"></iframe>
 
                         </div>
@@ -62,6 +61,9 @@ loadPartial('sidebar');
                 </div>
             </div>
 
+
+            <!-- display the submission button -->
+
             <div class="rounded shadow bg-white p-3 my-3">
                 <div class="bg-red  bg-opacity-20">
                     <?= $error  ?? '' ?>
@@ -70,12 +72,13 @@ loadPartial('sidebar');
 
                 <form method="POST" action="/submissions/grade" class="col-8">
                     <input type="hidden" name="id" value="<?= $submission->id ?>">
-                    <textarea name="score" class="form-control" id="score"></textarea>
+                    <input type="number" class="form-control" name="score" id="score">
                     <div class=" col-4 pt-2 pb-4">
                         <button type="submit" class="px-4 py-2 w-100 btn-outline-warning btn text-black fw-medium rounded"> Grade</button>
                     </div>
                 </form>
             </div>
+
         </div>
 
     </div>

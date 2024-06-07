@@ -123,6 +123,12 @@ class UserController
 
         redirect('/auth/login');
     }
+
+    /**
+     * register staff
+     *
+     * @return void
+     */
     public function staffStore()
     {
 

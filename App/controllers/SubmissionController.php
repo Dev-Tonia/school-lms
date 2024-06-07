@@ -63,13 +63,14 @@ class SubmissionController
         $param = [
             'id' => $id
         ];
+        // getting the submission to grade
         $submission = $this->db->query('SELECT * FROM submissions WHERE id = :id', $param)->fetch();
 
         $params = [
             'student_id' => $submission->user_id,
             'assignment_id' => $submission->assignment_id,
             'submission_id' => $submission->id,
-            'score' => $score
+            'score' => (float) $score
         ];
 
         $this->db->query('INSERT INTO scores (student_id, assignment_id, submission_id, score ) VALUES

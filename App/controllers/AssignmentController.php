@@ -8,7 +8,6 @@ use Framework\Validation;
 class AssignmentController
 {
     protected $db;
-    private $assignments;
     private $assignment;
 
     public function __construct()
@@ -19,9 +18,24 @@ class AssignmentController
     }
     public  function index()
     {
-        $this->assignments = $this->db->query('SELECT * FROM assignment')->fetchAll();
+
+        $class = "";
+        if (isset($_SESSION['user'])) {
+            // getting the user details 
+            $class =  $_SESSION['user']['level'];
+        }
+
+        $params = [
+            'class' => $class
+        ];
+
+        // getting all the assignments for the lectures
+        $assignments = $this->db->query('SELECT * FROM assignment')->fetchAll();
+        $assignmentsForEachLevel = $this->db->query('SELECT * FROM assignment WHERE class = :class', $params)->fetchAll();
+
         loadView('assignments/index', [
-            'assignments' => $this->assignments,
+            'assignments' => $assignments,
+            'assignmentsForEachLevel' => $assignmentsForEachLevel
         ]);
         // loadView('assignments/index');
     }
@@ -35,6 +49,8 @@ class AssignmentController
         $params = [
             'id' => $id
         ];
+
+        // getting all the assignments
         $this->assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $params)->fetch();
 
         // Check if listing exists
@@ -143,7 +159,9 @@ class AssignmentController
         ];
         $this->db->query('INSERT INTO submissions (file_path, user_id, assignment_id ) VALUES (:file_path, :user_id, :assignment_id)', $params);
 
-        // loadView('/');
-        // inspectAndDie(basename($file["name"]));
+        // redirect users
+        redirect(
+            '/'
+        );
     }
 }

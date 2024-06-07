@@ -19,14 +19,17 @@
                         <span> Assignments </span>
                     </a>
                 </li>
-                <li class="nav-item fw-bold border-2 border-bottom pt-3">
-                    <a class="nav-link active d-flex  align-items-center" href="/submissions">
-                        <div class="pe-2">
-                            <i class="bi bi-card-checklist fs-5"></i>
-                        </div>
-                        <span> Submissions </span>
-                    </a>
-                </li>
+
+                <?php if ($_SESSION['user']['userType'] ===  'Lecturer') : ?>
+                    <li class="nav-item fw-bold border-2 border-bottom pt-3">
+                        <a class="nav-link active d-flex  align-items-center" href="/submissions">
+                            <div class="pe-2">
+                                <i class="bi bi-card-checklist fs-5"></i>
+                            </div>
+                            <span> Submissions </span>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li class="nav-item d-flex align-items-center  fw-bold border-2 border-bottom pt-3">
                     <form method="POST" action="/auth/logout">
                         <button type="submit" class="nav-link d-flex  align-items-center">

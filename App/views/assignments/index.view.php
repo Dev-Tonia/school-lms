@@ -3,6 +3,8 @@
 loadPartial('head');
 loadPartial('navbar');
 loadPartial('sidebar');
+
+$assignments =  $_SESSION['user']['userType'] ===  'Lecturer' ? $assignments : $assignmentsForEachLevel
 ?>
 
 <main class="d-flex mt-5 px-3 px-md-5">
@@ -12,14 +14,16 @@ loadPartial('sidebar');
     <div class="">
       <div class=" d-flex justify-content-between align-items-center ">
         <h5 class=" fw-bold "> All Assignment</h5>
-        <div class="border border-warning border-2 rounded d-inline-block py-1 px-3">
-          <a class=" d-flex  align-items-center text-success fw-bold text-decoration-none" href="/assignments/create">
-            <div class="pe-2">
-              <i class="bi bi-pen-fill fs-6"></i>
-            </div>
-            <span class=" "> New Assignment </span>
-          </a>
-        </div>
+        <?php if ($_SESSION['user']['userType'] ===  'Lecturer') : ?>
+          <div class="border border-warning border-2 rounded d-inline-block py-1 px-3">
+            <a class=" d-flex  align-items-center text-success fw-bold text-decoration-none" href="/assignments/create">
+              <div class="pe-2">
+                <i class="bi bi-pen-fill fs-6"></i>
+              </div>
+              <span class=" "> New Assignment </span>
+            </a>
+          </div>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -30,6 +34,7 @@ loadPartial('sidebar');
             <th scope="col">Course</th>
             <th scope="col">Assignment Title</th>
             <th scope="col">Description</th>
+            <th scope="col">Grade</th>
             <th scope="col">Time Frame</th>
             <th scope="col">Action</th>
           </tr>
@@ -40,6 +45,7 @@ loadPartial('sidebar');
               <td style="min-width:150px;"> <?= $assignment->course ?></td>
               <td> <?= $assignment->title ?> </td>
               <td> <?= $assignment->question ?> </td>
+              <td> <?= $assignment->grade ?> </td>
               <td> <?= $assignment->due_date ?> </td>
               <td><a href="/assignments/detail?id=<?= $assignment->id ?>">View</a> </td>
 

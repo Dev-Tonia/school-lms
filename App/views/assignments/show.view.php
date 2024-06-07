@@ -14,15 +14,19 @@ loadPartial('sidebar');
                         <i class="bi bi-arrow-left-circle"></i>
                         Back To Assignments
                     </a>
+
                     <div>
-                        <div class="d-flex align-item-center ">
-                            <a href="/edit" class="px-4 py-2 bg-success me-2  text-white rounded">Edit</a>
-                            <!-- Delete Form -->
-                            <form method="POST">
-                                <button type="submit" class="px-4 py-2 btn-danger btn   text-white rounded">Delete</button>
-                            </form>
-                            <!-- End Delete Form -->
-                        </div>
+                        <?php if ($_SESSION['user']['userType'] ===  'Lecturer') : ?>
+
+                            <div class="d-flex align-item-center ">
+                                <a href="/edit" class="px-4 py-2 bg-success me-2  text-white rounded">Edit</a>
+                                <!-- Delete Form -->
+                                <form method="POST">
+                                    <button type="submit" class="px-4 py-2 btn-danger btn   text-white rounded">Delete</button>
+                                </form>
+                                <!-- End Delete Form -->
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -54,29 +58,32 @@ loadPartial('sidebar');
                 </div>
             </div>
 
-            <div class="rounded shadow bg-white p-3 my-4">
-                <div class="bg-red  bg-opacity-20">
-                    <?= $error  ?? '' ?>
-                </div>
-                <h5 class=" fs-4 fw-medium"> Submission Details</h5>
-                <div>
-                    <p class=" leading">
-                        You are advice to do the assignment in word doc and upload the soft copy.
-                    </p>
-                    <p class=" leading">
-                        Review the file you are about to submit, once submitted you can't be able to change it
-                    </p>
 
-                </div>
-                <form method="POST" action="/assignments/submit" class="col-8" enctype="multipart/form-data">
-                    <input type="hidden" name="id" value="<?= $assignment->id ?>">
-                    <input type="file" name="file" class="form-control" accept=".doc,.docx,.xml,.pdf">
-                    <div class=" col-4 pt-2 pb-4">
-                        <button type="submit" class="px-4 py-2 w-100 btn-outline-warning btn text-black fw-medium rounded"> Submit</button>
+            <?php if ($_SESSION['user']['userType'] !==  'Lecturer') : ?>
+
+                <div class="rounded shadow bg-white p-3 my-4">
+                    <div class="bg-red  bg-opacity-20">
+                        <?= $error  ?? '' ?>
                     </div>
-                </form>
-            </div>
+                    <h5 class=" fs-4 fw-medium"> Submission Details</h5>
+                    <div>
+                        <p class=" leading">
+                            You are advice to do the assignment in word doc and upload the soft copy.
+                        </p>
+                        <p class=" leading">
+                            Review the file you are about to submit, once submitted you can't be able to change it
+                        </p>
 
+                    </div>
+                    <form method="POST" action="/assignments/submit" class="col-8" enctype="multipart/form-data">
+                        <input type="hidden" name="id" value="<?= $assignment->id ?>">
+                        <input type="file" name="file" class="form-control" accept=".doc,.docx,.xml,.pdf">
+                        <div class=" col-4 pt-2 pb-4">
+                            <button type="submit" class="px-4 py-2 w-100 btn-outline-warning btn text-black fw-medium rounded"> Submit</button>
+                        </div>
+                    </form>
+                </div>
+            <?php endif ?>
         </div>
 
     </div>
