@@ -35,13 +35,12 @@ class SubmissionController
         $params = [
             'id' => $id
         ];
-        $submission = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id,  s.assignment_id, s.file_path, s.created_at, u.id, 
+        $submission = $this->db->query('SELECT s.id AS submission_id, s.user_id,  s.assignment_id, s.file_path, s.created_at, u.id, 
         u.last_name, a.title, a.question, a.course, a.class, a.grade
         FROM submissions s
         JOIN users u ON s.user_id = u.id
         JOIN assignment a ON s.assignment_id = a.id 
         WHERE s.id = :id', $params)->fetch();
-
         // Check if listing exists
         if (!$submission) {
             ErrorController::notFound('submission not found');
@@ -54,17 +53,16 @@ class SubmissionController
 
     public function grade()
     {
+        $id = $_POST['sub-id'];
 
         // getting the user input
         $score    = filter_input(INPUT_POST, 'score', FILTER_SANITIZE_SPECIAL_CHARS);
-
-
-        $id = $_POST['id'];
         $param = [
             'id' => $id
         ];
         // getting the submission to grade
         $submission = $this->db->query('SELECT * FROM submissions WHERE id = :id', $param)->fetch();
+
 
         $params = [
             'student_id' => $submission->user_id,

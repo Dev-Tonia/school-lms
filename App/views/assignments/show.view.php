@@ -22,6 +22,8 @@ loadPartial('sidebar');
                                 <a href="/edit" class="px-4 py-2 bg-success me-2  text-white rounded">Edit</a>
                                 <!-- Delete Form -->
                                 <form method="POST">
+                                    <input type="hidden" name="id" value="<?= $assignment->id ?>">
+
                                     <button type="submit" class="px-4 py-2 btn-danger btn   text-white rounded">Delete</button>
                                 </form>
                                 <!-- End Delete Form -->
