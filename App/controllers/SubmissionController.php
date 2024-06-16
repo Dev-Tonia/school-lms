@@ -17,7 +17,7 @@ class SubmissionController
     }
     public  function index()
     {
-        $submissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path, s.created_at, u.first_name, u.last_name, 
+        $submissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path,s.grade , s.created_at, u.first_name, u.last_name, 
         a.title, a.question, a.course, a.class, a.mark_obtainable
         FROM submissions s
         JOIN users u ON s.user_id = u.id
@@ -35,19 +35,29 @@ class SubmissionController
         $params = [
             'id' => $id
         ];
-        $submission = $this->db->query('SELECT s.id AS submission_id, s.user_id,  s.assignment_id, s.file_path, s.created_at, u.id, 
+        // getting the submission
+        $submission = $this->db->query('SELECT s.id AS submission_id, s.user_id,  s.assignment_id, s.file_path, s.grade, s.created_at, u.id, 
         u.last_name, a.title, a.question, a.course, a.class, a.mark_obtainable
         FROM submissions s
         JOIN users u ON s.user_id = u.id
         JOIN assignment a ON s.assignment_id = a.id 
         WHERE s.id = :id', $params)->fetch();
+
+
+        $isScore = false;
+        $score = $submission->grade;
+        if ($score) {
+            $isScore = true;
+        }
         // Check if listing exists
         if (!$submission) {
             ErrorController::notFound('submission not found');
             return;
         }
+
         loadView('submissions/show', [
-            'submission' => $submission
+            'submission' => $submission,
+            'isScore' => $isScore
         ]);
     }
 
@@ -64,15 +74,20 @@ class SubmissionController
         $submission = $this->db->query('SELECT * FROM submissions WHERE id = :id', $param)->fetch();
 
 
-        $params = [
+        $scoreParams = [
             'student_id' => $submission->user_id,
             'assignment_id' => $submission->assignment_id,
             'submission_id' => $submission->id,
             'score' => (float) $score
         ];
 
+        $subParams = [
+            'grade' => $score,
+            'id' => $id
+        ];
         $this->db->query('INSERT INTO scores (student_id, assignment_id, submission_id, score ) VALUES
-                                             (:student_id, :assignment_id, :submission_id, :score)', $params);
+                                             (:student_id, :assignment_id, :submission_id, :score)', $scoreParams);
+        $this->db->query('UPDATE submissions SET grade = :grade WHERE id = :id', $subParams);
         redirect('/submissions');
     }
 }

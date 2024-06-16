@@ -36,7 +36,7 @@ loadPartial('sidebar');
                 <div class="mb-0 d-flex justify-content-between align-items-center">
                     <p> <span class=" fw-bold">Due date:</span> <span class=" fw-medium"><?= $assignment->due_date ?> </span>
                     </p>
-                    <p>mark: <?= $assignment->mark_obtainable ?></p>
+                    <p>Mark Obtainable: <?= $submission->mark_obtainable ?? '' ?></p>
                 </div>
                 <div class="mb-3 fw-medium d-flex justify-content-between align-items-center">
                     <p>course: <?= $assignment->course  ?></p>
@@ -77,13 +77,17 @@ loadPartial('sidebar');
                         </p>
 
                     </div>
-                    <form method="POST" action="/assignments/submit" class="col-8" enctype="multipart/form-data">
-                        <input type="hidden" name="id" value="<?= $assignment->id ?>">
-                        <input type="file" name="file" class="form-control" accept=".doc,.docx,.xml,.pdf">
-                        <div class=" col-4 pt-2 pb-4">
-                            <button type="submit" class="px-4 py-2 w-100 btn-outline-warning btn text-black fw-medium rounded"> Submit</button>
-                        </div>
-                    </form>
+                    <?php if (!$isSubmitted) : ?>
+                        <form method="POST" action="/assignments/submit" class="col-8" enctype="multipart/form-data">
+                            <input type="hidden" name="id" value="<?= $assignment->id ?>">
+                            <input type="file" name="file" class="form-control" accept=".doc,.docx,.xml,.pdf">
+                            <div class=" col-4 pt-2 pb-4">
+                                <button type="submit" class="px-4 py-2 w-100 btn-outline-warning btn text-black fw-medium rounded"> Submit</button>
+                            </div>
+                        </form>
+                    <?php else : ?>
+                        <P class=" fs-4 fw-semibold text-center">You Have Submitted this assignment</P>
+                    <?php endif; ?>
                 </div>
             <?php endif ?>
         </div>

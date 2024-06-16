@@ -25,6 +25,7 @@ loadPartial('sidebar');
                         <th scope="col">Assignment Title</th>
                         <th scope="col">Level</th>
                         <th scope="col">Name Of Student</th>
+                        <th scope="col">Grade</th>
                         <th scope="col">Submitted At</th>
                         <th scope="col">Action</th>
                     </tr>
@@ -36,6 +37,7 @@ loadPartial('sidebar');
                             <td> <?= $submission->title ?> </td>
                             <td> <?= $submission->class ?> </td>
                             <td> <?= $submission->first_name ?> <?= $submission->last_name ?></td>
+                            <td> <?= $submission->grade ?? 'Not graded' ?></td>
                             <td> <?= $submission->created_at ?></td>
                             <td><a href="/submissions/detail?id=<?= $submission->id ?>">View</a> </td>
                         </tr>

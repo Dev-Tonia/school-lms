@@ -24,7 +24,7 @@ loadPartial('sidebar');
                 <div class="mb-0 d-flex justify-content-between align-items-center">
                     <!-- <p> <span class=" fw-bold">Due date:</span> <span class=" fw-medium"><?= $submission->due_date ?> </span>
                     </p> -->
-                    <p>mark: <?= $submission->grade ?></p>
+                    <p>Mark Obtainable: <?= $submission->mark_obtainable ?></p>
                 </div>
                 <div class="mb-3 fw-medium ">
                     <p>course: <?= $submission->course  ?></p>
@@ -69,15 +69,22 @@ loadPartial('sidebar');
                     <?= $error  ?? '' ?>
                 </div>
                 <h5 class=" fs-4 fw-medium"> Grade Student</h5>
+                <?php if (!$isScore) : ?>
 
-                <form method="POST" action="/submissions/grade" class="col-8">
+                    <form method="POST" action="/submissions/grade" class="col-8">
 
-                    <input type="hidden" name="sub-id" value="<?= $submission->submission_id ?>">
-                    <input type="number" class="form-control" value="<?= $submission->grade ?>" name="score" id="score">
-                    <div class=" col-4 pt-2 pb-4">
-                        <button type="submit" class="px-4 py-2 w-100 btn-outline-warning btn text-black fw-medium rounded"> Grade</button>
+                        <input type="hidden" name="sub-id" value="<?= $submission->submission_id ?>">
+                        <input type="number" class="form-control" value="<?= $submission->grade ?>" name="score" id="score">
+                        <div class=" col-4 pt-2 pb-4">
+                            <button type="submit" class="px-4 py-2 w-100 btn-outline-warning btn text-black fw-medium rounded"> Grade</button>
+                        </div>
+                    </form>
+
+                <?php else : ?>
+                    <div>
+                        <P class=" fs-4 fw-semibold text-center">This Submission has been graded</P>
                     </div>
-                </form>
+                <?php endif; ?>
             </div>
 
         </div>

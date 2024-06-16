@@ -31,6 +31,7 @@ class AssignmentController
 
         // getting all the assignments for the lectures
         $assignments = $this->db->query('SELECT * FROM assignment')->fetchAll();
+        // getting all assignment for each student level
         $assignmentsForEachLevel = $this->db->query('SELECT * FROM assignment WHERE class = :class', $params)->fetchAll();
 
         loadView('assignments/index', [
@@ -45,21 +46,36 @@ class AssignmentController
     }
     public  function show()
     {
-        $id = $_GET['id'] ?? '';
-        $params = [
-            'id' => $id
+        $assId = $_GET['id'] ?? '';
+        $userId = "";
+        if (isset($_SESSION['user'])) {
+            // getting the user details 
+            $userId =  $_SESSION['user']['id'];
+        }
+
+        $assParams = [
+            'id' => $assId
         ];
-
         // getting all the assignments
-        $this->assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $params)->fetch();
-
+        $this->assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $assParams)->fetch();
         // Check if listing exists
         if (!$this->assignment) {
             ErrorController::notFound('assignment not found');
             return;
         }
+        $isSubmitted = false;
+        $subParams = [
+            'assignment_id' => $assId,
+            'user_id' => $userId
+        ];
+
+        $submission = $this->db->query('SELECT * FROM submissions WHERE assignment_id = :assignment_id AND user_id = :user_id', $subParams)->fetch();
+        if ($submission) {
+            $isSubmitted = true;
+        }
         loadView('assignments/show', [
-            'assignment' => $this->assignment
+            'assignment' => $this->assignment,
+            'isSubmitted' => $isSubmitted
         ]);
     }
 
@@ -139,15 +155,12 @@ class AssignmentController
     public function submit()
     {
         $assignmentId = $_POST['id']; //this is coming from the hidden input in the submit form
-
         $file = $_FILES['file'];
         $path = basename($file["name"]);
         $target_file = 'upload/' . $path;
         $isUpload =   move_uploaded_file($file["tmp_name"], $target_file);
 
         if (!$isUpload) {
-            $error = ["The file can't be uploaded. Try again"];
-            // inspectAndDie($this->assignments);
             redirect(
                 '/assignments'
             );
