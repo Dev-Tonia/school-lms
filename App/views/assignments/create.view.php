@@ -26,9 +26,7 @@ loadPartial('sidebar');
             </div>
             <div class="mb-3">
               <label for="question" class="form-label  mb-1 font-medium">Question</label>
-              <textarea class="form-control" name="question" id="question" rows="3" placeholder="what is ...">
-              <?= $assignment['question'] ?? '' ?>
-              </textarea>
+              <textarea class="form-control" name="question" id="question" rows="3" placeholder="what is ..."><?= $assignment['question'] ?? '' ?></textarea>
               <small class="text-danger"><?= $errors['question'] ?? '' ?> </small>
 
             </div>
@@ -61,9 +59,9 @@ loadPartial('sidebar');
 
             </div>
             <div class="mb-3">
-              <label for="grade" class="form-label mb-1 font-medium">Mark</label>
-              <input type="text" value="<?= $assignment['grade'] ?? '' ?>" name="grade" class="form-control" id="grade" placeholder="3">
-              <small class="text-danger"><?= $errors['grade'] ?? '' ?> </small>
+              <label for="grade" class="form-label mb-1 font-medium">Mark obtainable</label>
+              <input type="text" value="<?= $assignment['markObtainable'] ?? '' ?>" name="mark-obtainable" class="form-control" id="mark-obtainable" placeholder="mark obtainable">
+              <small class="text-danger"><?= $errors['markObtainable'] ?? '' ?> </small>
 
             </div>
             <div class="mb-3">

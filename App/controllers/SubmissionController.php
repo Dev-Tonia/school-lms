@@ -18,7 +18,7 @@ class SubmissionController
     public  function index()
     {
         $submissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path, s.created_at, u.first_name, u.last_name, 
-        a.title, a.question, a.course, a.class, a.grade
+        a.title, a.question, a.course, a.class, a.mark_obtainable
         FROM submissions s
         JOIN users u ON s.user_id = u.id
         JOIN assignment a ON s.assignment_id = a.id;
@@ -36,7 +36,7 @@ class SubmissionController
             'id' => $id
         ];
         $submission = $this->db->query('SELECT s.id AS submission_id, s.user_id,  s.assignment_id, s.file_path, s.created_at, u.id, 
-        u.last_name, a.title, a.question, a.course, a.class, a.grade
+        u.last_name, a.title, a.question, a.course, a.class, a.mark_obtainable
         FROM submissions s
         JOIN users u ON s.user_id = u.id
         JOIN assignment a ON s.assignment_id = a.id 

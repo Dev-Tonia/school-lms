@@ -36,7 +36,7 @@
                 <th scope="col">Course</th>
                 <th scope="col">Assignment Title</th>
                 <th scope="col">Description</th>
-                <th scope="col">Time Frame</th>
+                <th scope="col">Due Date</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>

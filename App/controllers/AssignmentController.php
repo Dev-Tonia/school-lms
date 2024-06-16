@@ -74,7 +74,7 @@ class AssignmentController
         $title    = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_SPECIAL_CHARS);
         $question    = filter_input(INPUT_POST, 'question', FILTER_SANITIZE_SPECIAL_CHARS);
         $course    = filter_input(INPUT_POST, 'course', FILTER_SANITIZE_SPECIAL_CHARS);
-        $grade    = filter_input(INPUT_POST, 'grade', FILTER_SANITIZE_SPECIAL_CHARS);
+        $markObtainable    = filter_input(INPUT_POST, 'mark-obtainable', FILTER_SANITIZE_SPECIAL_CHARS);
         $dueDate    = filter_input(INPUT_POST, 'dueDate');
 
         // check if the user is login
@@ -98,9 +98,10 @@ class AssignmentController
         if (!Validation::string($dueDate)) {
             $errors['dueDate'] = 'Input a due date';
         }
-        if (!Validation::string($grade)) {
-            $errors['dueDate'] = 'Input a due date';
+        if (!Validation::string($markObtainable)) {
+            $errors['markObtainable'] = 'Obtainable mark is required';
         }
+        // inspectAndDie($grade);
 
         // check to make sure there is no error.
         if (!empty($errors)) {
@@ -112,7 +113,7 @@ class AssignmentController
                     'question' => $question,
                     'course' => $course,
                     'dueDate' => $dueDate,
-                    'grade' => $grade,
+                    'markObtainable' => $markObtainable,
 
                 ]
             ]);
@@ -126,11 +127,11 @@ class AssignmentController
             'class' => $class,
             'course' => $course,
             'due_date' => $dueDate,
-            'grade' => $grade,
+            'mark_obtainable' => $markObtainable,
             'user_id' => $_SESSION['user']['id']
         ];
-        $this->db->query('INSERT INTO assignment (title, question, class, course, due_date, grade ,user_id ) VALUES
-                                                 (:title, :question, :class, :course, :due_date, :grade, :user_id)', $params);
+        $this->db->query('INSERT INTO assignment (title, question, class, course, due_date, mark_obtainable ,user_id ) VALUES
+                                                 (:title, :question, :class, :course, :due_date, :mark_obtainable, :user_id)', $params);
 
 
         redirect('/assignments');
@@ -162,6 +163,20 @@ class AssignmentController
         // redirect users
         redirect(
             '/'
+        );
+    }
+
+    public function delete()
+    {
+        $assignmentId = $_POST['id']; //this is coming from the hidden input in the submit form
+
+        $params = ['id' => $assignmentId];
+
+        $this->db->query('DELETE FROM assignment WHERE id = :id', $params);
+
+        // redirect users
+        redirect(
+            '/assignments'
         );
     }
 }

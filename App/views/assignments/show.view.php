@@ -21,7 +21,7 @@ loadPartial('sidebar');
                             <div class="d-flex align-item-center ">
                                 <a href="/edit" class="px-4 py-2 bg-success me-2  text-white rounded">Edit</a>
                                 <!-- Delete Form -->
-                                <form method="POST">
+                                <form method="POST" action="/assignments/delete">
                                     <input type="hidden" name="id" value="<?= $assignment->id ?>">
 
                                     <button type="submit" class="px-4 py-2 btn-danger btn   text-white rounded">Delete</button>
@@ -36,7 +36,7 @@ loadPartial('sidebar');
                 <div class="mb-0 d-flex justify-content-between align-items-center">
                     <p> <span class=" fw-bold">Due date:</span> <span class=" fw-medium"><?= $assignment->due_date ?> </span>
                     </p>
-                    <p>mark: <?= $assignment->grade ?></p>
+                    <p>mark: <?= $assignment->mark_obtainable ?></p>
                 </div>
                 <div class="mb-3 fw-medium d-flex justify-content-between align-items-center">
                     <p>course: <?= $assignment->course  ?></p>

@@ -22,7 +22,7 @@ function getTotal($array, $value)
 
 $totalScore = getTotal($scores, 'score');
 
-$totalGrade = getTotal($assignmentsForEachLevel, 'grade');
+$totalGrade = getTotal($assignmentsForEachLevel, 'mark_obtainable');
 
 
 

@@ -20,6 +20,8 @@ if (
     $router->get('/assignments/detail', 'AssignmentController::show');
     $router->post('/assignments', 'AssignmentController::store');
     $router->post('/assignments/submit', 'AssignmentController::submit');
+    $router->post('/assignments/delete', 'AssignmentController::delete');
+
 
     // Submission Routes
     $router->get('/submissions', 'SubmissionController::index');

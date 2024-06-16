@@ -34,7 +34,7 @@ $assignments =  $_SESSION['user']['userType'] ===  'Lecturer' ? $assignments : $
             <th scope="col">Course</th>
             <th scope="col">Assignment Title</th>
             <th scope="col">Description</th>
-            <th scope="col">Grade</th>
+            <th scope="col">Obtainable Mark</th>
             <th scope="col">Time Frame</th>
             <th scope="col">Action</th>
           </tr>
@@ -45,7 +45,7 @@ $assignments =  $_SESSION['user']['userType'] ===  'Lecturer' ? $assignments : $
               <td style="min-width:150px;"> <?= $assignment->course ?></td>
               <td> <?= $assignment->title ?> </td>
               <td> <?= $assignment->question ?> </td>
-              <td> <?= $assignment->grade ?> </td>
+              <td> <?= $assignment->mark_obtainable ?> </td>
               <td> <?= $assignment->due_date ?> </td>
               <td><a href="/assignments/detail?id=<?= $assignment->id ?>">View</a> </td>
 
