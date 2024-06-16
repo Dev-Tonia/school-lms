@@ -44,3 +44,4 @@
         </nav>
     </div>
 </aside>
+<div class="position-fixed top-0 start-0 end-0 bottom-0 bg-dark bg-opacity-50 d-md-none" id="sidebarBackdrop"></div>

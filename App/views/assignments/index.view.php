@@ -1,9 +1,5 @@
 <?php
-
-loadPartial('head');
-loadPartial('navbar');
-loadPartial('sidebar');
-
+loadPartial('layout');
 $assignments =  $_SESSION['user']['userType'] ===  'Lecturer' ? $assignments : $assignmentsForEachLevel
 ?>
 
@@ -59,5 +55,6 @@ $assignments =  $_SESSION['user']['userType'] ===  'Lecturer' ? $assignments : $
 </main>
 
 <?php
+loadPartial('layout-footer');
 loadPartial('footer');
 ?>
