@@ -3,7 +3,7 @@
 
 
 <div class="grid  gap-5 w-full">
-  <div class=" col-7 mx-auto bg-white px-3 py-3 my-4 rounded">
+  <div class=" col-11 col-md-7 mx-auto bg-white px-3 py-3 my-4 rounded">
     <h5 class="text-center"> Create new Assignment</h5>
 
     <section class=" pb-4">

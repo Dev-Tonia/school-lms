@@ -23,8 +23,8 @@ loadPartial('head');
 <?php
 loadPartial('sidebar');
 ?>
-<main class="d- mt-5 px-3 px-md-5">
-    <div class=" col-2 sideUnderlay">
+<main class="d-flex mt-5 px-3 px-md-5">
+    <div class=" d-none d-md-block col-md-3 col-lg-2 sideUnderlay">
     </div>
 
-    <div class="col-12 col-md-10 mx-auto">
+    <div class="col-12 col-md-9 col-lg-10 mx-auto">

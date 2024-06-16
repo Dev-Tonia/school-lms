@@ -1,20 +1,21 @@
-// const sidebar = document.querySelector("aside");
-// const menu = document.querySelector(".menu");
-// const sidebarBackdrop = document.getElementById("sidebarBackdrop");
-// let isOpen = false;
-// menu.addEventListener("click", () => {
-//   isOpen != isOpen;
-//   sidebar.classList.toggle("invisible");
-// });
-// sidebarBackdrop.addEventListener("click", toggleOverlay);
+const sidebar = document.querySelector("aside");
+const menu = document.querySelector(".menu");
+const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+const sideUnderlay = document.querySelector(".sideUnderlay");
 
-// function toggleOverlay() {
-//   console.log("object");
-//   if (!isOpen) {
-//     sidebarBackdrop.classList.remove("d-block");
-//     sidebarBackdrop.classList.add("d-none");
-//   } else {
-//     sidebarBackdrop.classList.remove("d-none");
-//     sidebarBackdrop.classList.add("d-block");
-//   }
-// }
+let w = window.innerWidth;
+
+menu.addEventListener("click", () => {
+  if (w > 767) {
+    sidebar.classList.toggle("invisible");
+    sideUnderlay.classList.toggle("d-md-block");
+  }
+  toggleMobileSidebar();
+});
+function toggleMobileSidebar() {
+  if (w < 768) {
+    sidebar.classList.toggle("d-none");
+    sidebarBackdrop.classList.toggle("d-none");
+  }
+}
+sidebarBackdrop.addEventListener("click", toggleMobileSidebar);
