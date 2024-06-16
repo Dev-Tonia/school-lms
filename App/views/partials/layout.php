@@ -2,7 +2,7 @@
 loadPartial('head');
 ?>
 <nav class="navbar bg-white shadow sticky-top">
-    <div class="container-fluid py-2 px-5">
+    <div class="container-fluid py-2 px-3 px-md-5">
         <div>
             <i class="bi bi-list fs-4 text-black me-3 d-inline-block menu" role="button"></i>
             <a href="/" class="navbar-brand fw-bold">School Lms</a>
@@ -23,7 +23,7 @@ loadPartial('head');
 <?php
 loadPartial('sidebar');
 ?>
-<main class="d-flex mt-5 px-3 px-md-5">
+<main class="d- mt-5 px-3 px-md-5">
     <div class=" col-2 sideUnderlay">
     </div>
 

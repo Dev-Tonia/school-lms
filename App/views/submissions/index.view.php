@@ -6,31 +6,31 @@
     </div>
 </div>
 
-<section class=" px-2 py-2 shadow my-5 rounded bg-success bg-opacity-10">
+<section class=" px-2 py-2 shadow my-5 rounded table-responsive bg-success bg-opacity-10">
     <h6 class=" ">All Submission</h6>
 
     <table class="table table-light">
         <thead>
             <tr>
-                <th scope="col">Course</th>
-                <th scope="col">Assignment Title</th>
-                <th scope="col">Level</th>
-                <th scope="col">Name Of Student</th>
-                <th scope="col">Grade</th>
-                <th scope="col">Submitted At</th>
-                <th scope="col">Action</th>
+                <th style="white-space: nowrap;" scope="col">Course</th>
+                <th style="white-space: nowrap;" scope="col">Assignment Title</th>
+                <th style="white-space: nowrap;" scope="col">Level</th>
+                <th style="white-space: nowrap;" scope="col">Name Of Student</th>
+                <th style="white-space: nowrap;" scope="col">Grade</th>
+                <th style="white-space: nowrap;" scope="col">Submitted At</th>
+                <th style="white-space: nowrap;" scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($submissions as $submission) : ?>
                 <tr>
-                    <td style="min-width:150px;"> <?= $submission->course ?></td>
-                    <td> <?= $submission->title ?> </td>
-                    <td> <?= $submission->class ?> </td>
-                    <td> <?= $submission->first_name ?> <?= $submission->last_name ?></td>
-                    <td> <?= $submission->grade ?? 'Not graded' ?></td>
-                    <td> <?= $submission->created_at ?></td>
-                    <td><a href="/submissions/detail?id=<?= $submission->id ?>">View</a> </td>
+                    <td style="white-space: nowrap;"> <?= $submission->course ?></td>
+                    <td style="white-space: nowrap;"> <?= $submission->title ?> </td>
+                    <td style="white-space: nowrap;"> <?= $submission->class ?> </td>
+                    <td style="white-space: nowrap;"> <?= $submission->first_name ?> <?= $submission->last_name ?></td>
+                    <td style="white-space: nowrap;"> <?= $submission->grade ?? 'Not graded' ?></td>
+                    <td style="white-space: nowrap;"> <?= $submission->created_at ?></td>
+                    <td style="white-space: nowrap;"><a href="/submissions/detail?id=<?= $submission->id ?>">View</a> </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

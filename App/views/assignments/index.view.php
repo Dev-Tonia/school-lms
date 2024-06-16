@@ -23,27 +23,27 @@ $assignments =  $_SESSION['user']['userType'] ===  'Lecturer' ? $assignments : $
       </div>
     </div>
 
-    <section class=" px-2 py-2 shadow my-5 rounded bg-success bg-opacity-10">
+    <section class=" px-2 py-2 shadow my-5 table-responsive rounded bg-success bg-opacity-10">
       <table class="table table-light">
         <thead>
           <tr>
-            <th scope="col">Course</th>
-            <th scope="col">Assignment Title</th>
-            <th scope="col">Description</th>
-            <th scope="col">Obtainable Mark</th>
-            <th scope="col">Time Frame</th>
-            <th scope="col">Action</th>
+            <th style="white-space: nowrap;" scope="col">Course</th>
+            <th style="white-space: nowrap;" scope="col">Assignment Title</th>
+            <th style="white-space: nowrap;" scope="col">Description</th>
+            <th style="white-space: nowrap;" scope="col">Obtainable Mark</th>
+            <th style="white-space: nowrap;" scope="col">Time Frame</th>
+            <th style="white-space: nowrap;" scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($assignments as $assignment) : ?>
             <tr>
-              <td style="min-width:150px;"> <?= $assignment->course ?></td>
-              <td> <?= $assignment->title ?> </td>
-              <td> <?= $assignment->question ?> </td>
-              <td> <?= $assignment->mark_obtainable ?> </td>
-              <td> <?= $assignment->due_date ?> </td>
-              <td><a href="/assignments/detail?id=<?= $assignment->id ?>">View</a> </td>
+              <td style="white-space: nowrap;"> <?= $assignment->course ?></td>
+              <td style="white-space: nowrap;"> <?= $assignment->title ?> </td>
+              <td style="white-space: nowrap; min-width:300px;"> <?= $assignment->question ?> </td>
+              <td style="white-space: nowrap;"> <?= $assignment->mark_obtainable ?> </td>
+              <td style="white-space: nowrap;"> <?= $assignment->due_date ?> </td>
+              <td style="white-space: nowrap;"><a href="/assignments/detail?id=<?= $assignment->id ?>">View</a> </td>
 
             </tr>
           <?php endforeach; ?>

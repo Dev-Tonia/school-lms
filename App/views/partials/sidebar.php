@@ -1,4 +1,4 @@
-<aside class="col-2 border-end border-4 position-fixed z-2 d-none d-md-block bg-light
+<aside class="col-2 border-end border-4 position-fixed d-none d-md- bg-light
 " style="height: 100vh; padding-bottom: 40px;">
     <div class="overflow-y-auto h-100">
         <nav class="nav flex-column px-3 justify-content-center">
@@ -44,4 +44,4 @@
         </nav>
     </div>
 </aside>
-<div class="position-fixed top-0 start-0 end-0 bottom-0 bg-dark bg-opacity-50 d-md-none" id="sidebarBackdrop"></div>
+<div class="position-fixed top-0 start-0 end-0 bottom-0 bg-dark bg-opacity-50 d-none" id="sidebarBackdrop"></div>
