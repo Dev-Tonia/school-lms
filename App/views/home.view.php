@@ -23,12 +23,12 @@ function getRole($user)
 <?php
 
 if ($_SESSION['user']['userType'] ===  'Lecturer') {
-  loadView('lecture', [
+  loadPartial('lecture-home', [
     'submissions' => $submissions,
     'assignmentsFormEachLectures' => $assignmentsFormEachLectures
   ]);
 } else {
-  loadView('student', [
+  loadPartial('student-home', [
     'scores' => $scores,
     'assignmentsForEachLevel' => $assignmentsForEachLevel,
     'studentSubmissions' => $studentSubmissions

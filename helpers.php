@@ -39,10 +39,12 @@ function loadView($name, $data = [])
  * @return  void
  * 
  */
-function loadPartial($name)
+function loadPartial($name,  $data = [])
 {
     $partialPath =  basePath("App/views/partials/{$name}.php");
     if (file_exists($partialPath)) {
+        extract($data); // this will import variables into the current symbol form the table 
+
         require $partialPath;
     } else {
         echo "View '{$name} not found!'";
@@ -86,4 +88,50 @@ function redirect($url)
 {
     header("Location: {$url}");
     exit;
+}
+
+/**
+ * Undocumented function
+ *
+ * @param array $submissions
+ * @param array $assignments
+ * @return array
+ */
+// Function to get grades for each assignment
+function getGradesForAssignments(array $submissions, array $assignments)
+{
+    $results = [];
+    foreach ($assignments as $assignment) {
+        // Initialize grade 
+        $grade = '';
+
+        foreach ($submissions as $submission) {
+
+            if ($submission->assignment_id === $assignment->id && $submission->user_id === $_SESSION['user']['id']) {
+                $grade = $submission->grade;  // Get the actual grade if found
+                break;
+            }
+        }
+        $results[] = [
+            'course' => $assignment->course,
+            'title' => $assignment->title,
+            'question' => $assignment->question,
+            'mark_obtainable' => $assignment->mark_obtainable,
+            'due_date' => $assignment->due_date,
+            'grade' => $grade,
+            'id' => $assignment->id
+        ];
+    }
+    return $results;
+}
+
+function getGradeStatus($grade)
+{
+    if ($grade === null) {
+        return 'Not graded';
+    } elseif ($grade === '') {
+        return 'Not submitted';
+    } else {
+        return 'Graded: ' . $grade;
+    }
 }

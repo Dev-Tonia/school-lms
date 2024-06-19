@@ -20,23 +20,43 @@ class AssignmentController
     {
 
         $class = "";
+        $student_id = '';
+        $lec_id = '';
         if (isset($_SESSION['user'])) {
             // getting the user details 
-            $class =  $_SESSION['user']['level'];
+            $class =   $_SESSION['user']['level'];
+            $student_id =   $_SESSION['user']['userType'] === 'Student' ?  $_SESSION['user']['id'] : '';
+            $lec_id =   $_SESSION['user']['userType'] === 'Lecturer' ?  $_SESSION['user']['id'] : '';
         }
-
-        $params = [
-            'class' => $class
+        $paramForId = [
+            'id' => $student_id,
         ];
-
         // getting all the assignments for the lectures
         $assignments = $this->db->query('SELECT * FROM assignment')->fetchAll();
-        // getting all assignment for each student level
-        $assignmentsForEachLevel = $this->db->query('SELECT * FROM assignment WHERE class = :class', $params)->fetchAll();
+
+        // filtering all the assignment to get each level assignment
+        $filterAssignmentForStudent = array_filter($assignments, function ($assignment) use ($class) {
+            return $assignment->class === $class;
+        });
+        // filtering all the assignment to get each level assignment
+        $filterAssignmentForEachLecture = array_filter($assignments, function ($assignment) use ($lec_id) {
+            return $assignment->id === $lec_id;
+        });
+
+        // getting all submission
+        $submissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
+      a.title, a.question, a.course, a.class, a.mark_obtainable
+      FROM submissions s
+      JOIN users u ON s.user_id = u.id
+      JOIN assignment a ON s.assignment_id = a.id 
+      WHERE s.user_id = :id', $paramForId)->fetchAll();
+        // inspectAndDie($submissions);
+        $assignmentsForEachStudent = getGradesForAssignments(assignments: $filterAssignmentForStudent, submissions: $submissions);
 
         loadView('assignments/index', [
-            'assignments' => $assignments,
-            'assignmentsForEachLevel' => $assignmentsForEachLevel
+            'allAssignments' => $assignments,
+            'assignmentsForEachStudent' => $assignmentsForEachStudent,
+            'assignmentsForEachLecture' => $filterAssignmentForEachLecture,
         ]);
         // loadView('assignments/index');
     }

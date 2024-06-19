@@ -1,6 +1,17 @@
 <?php
 loadPartial('layout');
-$assignments =  $_SESSION['user']['userType'] ===  'Lecturer' ? $assignments : $assignmentsForEachLevel
+$user =  $_SESSION['user']['userType'];
+// $assignments = $user === 'Lecturer' ? $assignmentsForEachLecture : ($user === 'Student' ? $assignmentsForEachStudent : $assignments);
+$assignments = [];
+
+if ($user === 'Lecturer') {
+  $assignments = $assignmentsForEachLecture;
+} else {
+  $assignments = $allAssignments; // Optional: Handle unexpected user types
+}
+
+
+
 ?>
 <div class="">
   <div class=" d-flex justify-content-between align-items-center ">
@@ -18,34 +29,43 @@ $assignments =  $_SESSION['user']['userType'] ===  'Lecturer' ? $assignments : $
   </div>
 </div>
 
+
 <section class=" px-2 py-2 shadow my-5 table-responsive rounded bg-success bg-opacity-10">
-  <table class="table table-light">
-    <thead>
-      <tr>
-        <th style="white-space: nowrap;" scope="col">Course</th>
-        <th style="white-space: nowrap;" scope="col">Assignment Title</th>
-        <th style="white-space: nowrap;" scope="col">Description</th>
-        <th style="white-space: nowrap;" scope="col">Obtainable Mark</th>
-        <th style="white-space: nowrap;" scope="col">Time Frame</th>
-        <th style="white-space: nowrap;" scope="col">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php foreach ($assignments as $assignment) : ?>
+  <?php if ($user === 'Student') : ?>
+    <?php
+    loadPartial('student-table', [
+      'assignments' => $assignmentsForEachStudent
+    ])
+    ?>
+  <?php else : ?>
+    <table class="table table-light">
+      <thead>
         <tr>
-          <td style="white-space: nowrap;"> <?= $assignment->course ?></td>
-          <td style="white-space: nowrap;"> <?= $assignment->title ?> </td>
-          <td style="white-space: nowrap; min-width:300px;"> <?= $assignment->question ?> </td>
-          <td style="white-space: nowrap;"> <?= $assignment->mark_obtainable ?> </td>
-          <td style="white-space: nowrap;"> <?= $assignment->due_date ?> </td>
-          <td style="white-space: nowrap;"><a href="/assignments/detail?id=<?= $assignment->id ?>">View</a> </td>
-
+          <th style="white-space: nowrap;" scope="col">Course</th>
+          <th style="white-space: nowrap;" scope="col">Assignment Title</th>
+          <th style="white-space: nowrap;" scope="col">Description</th>
+          <th style="white-space: nowrap;" scope="col">Obtainable Mark</th>
+          <th style="white-space: nowrap;" scope="col">Time Frame</th>
+          <th style="white-space: nowrap;" scope="col">Action</th>
         </tr>
-      <?php endforeach; ?>
-    </tbody>
-  </table>
-</section>
+      </thead>
+      <tbody>
+        <?php foreach ($assignments as $assignment) : ?>
+          <tr>
+            <td style="white-space: nowrap;"> <?= $assignment->course ?></td>
+            <td style="white-space: nowrap;"> <?= $assignment->title ?> </td>
+            <td style="white-space: nowrap; min-width:300px;"> <?= $assignment->question ?> </td>
+            <td style="white-space: nowrap;"> <?= $assignment->mark_obtainable ?> </td>
+            <td style="white-space: nowrap;"> <?= $assignment->due_date ?> </td>
+            <td style="white-space: nowrap;"><a href="/assignments/detail?id=<?= $assignment->id ?>">View</a> </td>
 
+          </tr>
+        <?php endforeach; ?>
+      </tbody>
+    </table>
+  <?php endif ?>
+
+</section>
 
 <?php
 loadPartial('layout-footer');

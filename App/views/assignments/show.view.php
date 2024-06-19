@@ -54,7 +54,7 @@
     </div>
 
 
-    <?php if ($_SESSION['user']['userType'] !==  'Lecturer') : ?>
+    <?php if ($_SESSION['user']['userType'] ===  'Student') : ?>
 
         <div class="rounded shadow bg-white p-3 my-4">
             <div class="bg-red  bg-opacity-20">

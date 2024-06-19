@@ -28,9 +28,6 @@ class HomeController
         $paramForId = [
             'id' => $id,
         ]; // parameter to be pass to the query where id is need
-        $paramForLevel = [
-            'class' => $class
-        ]; // to be passed where the need for to retrieve student level
 
         // getting all the assignment 
         $assignments = $this->db->query('SELECT * FROM assignment')->fetchAll();
@@ -58,7 +55,7 @@ class HomeController
         a.title, a.question, a.course, a.class, a.mark_obtainable
         FROM submissions s
         JOIN users u ON s.user_id = u.id
-        JOIN assignment a ON s.assignment_id = a.id;')->fetchAll();
+        JOIN assignment a ON s.assignment_id = a.id')->fetchAll();
 
 
         // filtering all the submission to get each student submission
