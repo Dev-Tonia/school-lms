@@ -31,7 +31,7 @@ class SubmissionController
 
     public  function show()
     {
-        $id = $_GET['id'] ?? '';
+        $id = htmlspecialchars($_GET['id'] ?? '');
         $params = [
             'id' => $id
         ];
@@ -63,7 +63,7 @@ class SubmissionController
 
     public function grade()
     {
-        $id = $_POST['sub-id'];
+        $id = htmlspecialchars($_POST['sub-id']);
 
         // getting the user input
         $score    = filter_input(INPUT_POST, 'score', FILTER_SANITIZE_SPECIAL_CHARS);

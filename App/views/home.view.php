@@ -1,28 +1,13 @@
 <?php
 
-
-/**
- * get the total value 
- *
- * @param array $array
- * @param string $value
- * @return number
- */
-function getTotal($array, $value)
+function getRole($user)
 {
-  $total = 0;
-  foreach ($array as $list) {
-    $total += (float)  $list->$value;
+  if ($user === 'Student') {
+    return $_SESSION['user']['reg-no'];
+  } else {
+    return  $_SESSION['user']['userType'];
   }
-  return $total;
 }
-
-
-$totalScore = getTotal($scores, 'score');
-
-$totalGrade = getTotal($assignmentsForEachLevel, 'mark_obtainable');
-
-
 
 ?>
 
@@ -32,7 +17,7 @@ $totalGrade = getTotal($assignmentsForEachLevel, 'mark_obtainable');
   <div class="col-5 col-md-3">
     <h5 class=""> Welcome back, <?= $_SESSION['user']['firstName'] ?></h5>
     <h5 class=" fs-6 text-center px-2 py-1 text-white rounded-pill uppercase bg-success bg-opacity-20 ">
-      <?= $_SESSION['user']['userType'] ===  'Lecturer' ?  $_SESSION['user']['employee-no']  : $_SESSION['user']['reg-no'] ?> </h5>
+      <?= getRole($_SESSION['user']['userType']) ?> </h5>
   </div>
 </div>
 <?php
@@ -44,10 +29,7 @@ if ($_SESSION['user']['userType'] ===  'Lecturer') {
   ]);
 } else {
   loadView('student', [
-    'total' => [
-      'totalGrade' => $totalGrade,
-      'totalScore' => $totalScore
-    ],
+    'scores' => $scores,
     'assignmentsForEachLevel' => $assignmentsForEachLevel,
     'studentSubmissions' => $studentSubmissions
   ]);

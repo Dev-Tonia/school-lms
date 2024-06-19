@@ -46,7 +46,7 @@ class AssignmentController
     }
     public  function show()
     {
-        $assId = $_GET['id'] ?? '';
+        $assId = htmlspecialchars($_GET['id'] ?? '');
         $userId = "";
         if (isset($_SESSION['user'])) {
             // getting the user details 
@@ -54,7 +54,7 @@ class AssignmentController
         }
 
         $assParams = [
-            'id' => $assId
+            'id' =>  $assId
         ];
         // getting all the assignments
         $this->assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $assParams)->fetch();
@@ -178,7 +178,14 @@ class AssignmentController
             '/'
         );
     }
-
+    public function edit()
+    {
+        $assId = htmlspecialchars($_GET['id'] ?? '');
+        //         if (!$assId) {
+        // redirect('/assignments')            exit;
+        //         }
+        inspectAndDie($assId);
+    }
     public function delete()
     {
         $assignmentId = $_POST['id']; //this is coming from the hidden input in the submit form

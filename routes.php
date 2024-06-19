@@ -18,6 +18,7 @@ if (
     $router->get('/assignments', 'AssignmentController::index');
     $router->get('/assignments/create', 'AssignmentController::create');
     $router->get('/assignments/detail', 'AssignmentController::show');
+    $router->get('/assignments/edit', 'AssignmentController::edit');
     $router->post('/assignments', 'AssignmentController::store');
     $router->post('/assignments/submit', 'AssignmentController::submit');
     $router->post('/assignments/delete', 'AssignmentController::delete');

@@ -16,6 +16,7 @@ class HomeController
     }
     public  function index()
     {
+        // inspectAndDie(password_hash('epassAdmin', PASSWORD_DEFAULT),);
         $id = '';
         $class = "";
         if (isset($_SESSION['user'])) {
@@ -31,44 +32,45 @@ class HomeController
             'class' => $class
         ]; // to be passed where the need for to retrieve student level
 
-        // getting all the assignments for each student level
-        $assignmentsForEachLevel = $this->db->query('SELECT * FROM assignment WHERE class = :class', $paramForLevel)->fetchAll();
+        // getting all the assignment 
+        $assignments = $this->db->query('SELECT * FROM assignment')->fetchAll();
 
-        // getting all the assignment for each lecture
-        $assignmentsFormEachLectures = $this->db->query('SELECT * FROM assignment WHERE id = :id', $paramForId)->fetchAll();
+        // filtering all the assignment to get each lecture assignment
+        $assignmentsByLecturer = array_filter($assignments, function ($assignment) use ($id) {
+            return $assignment->user_id === $id;
+        });
 
+        // filtering all the assignment to get each level assignment
+        $assignmentsForEachLevel = array_filter($assignments, function ($assignment) use ($class) {
+            return $assignment->class === $class;
+        });
 
         // getting all scores for the student  
         $scores = $this->db->query('SELECT s.id AS score_id, s.id, s.student_id, s.assignment_id, s.score, u.first_name, 
         a.title, a.question, a.course, a.class
         FROM scores s
         JOIN users u ON s.student_id = u.id
-        JOIN assignment a ON s.assignment_id = a.id;
+        JOIN assignment a ON s.assignment_id = a.id
         WHERE  s.student_id = :id', $paramForId)->fetchAll();
 
         // getting all submission
-        $submissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path, s.created_at, u.first_name, u.last_name, 
+        $submissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
         a.title, a.question, a.course, a.class, a.mark_obtainable
         FROM submissions s
         JOIN users u ON s.user_id = u.id
-        JOIN assignment a ON s.assignment_id = a.id;
-        ')->fetchAll();
+        JOIN assignment a ON s.assignment_id = a.id;')->fetchAll();
 
 
-        // getting all submission for each student
-        $studentSubmissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
-        a.title, a.question, a.course, a.class, a.mark_obtainable
-        FROM submissions s
-        JOIN users u ON s.user_id = u.id
-        JOIN assignment a ON s.assignment_id = a.id;
-        WHERE  s.student_id = :id', $paramForId)->fetchAll();
+        // filtering all the submission to get each student submission
+        $studentSubmissions = array_filter($submissions, function ($submission) use ($id) {
+            return $submission->user_id === $id;
+        });
 
-        // inspectAndDie($assignmentsForEachLevel);
 
         $isLogin = isset($_SESSION['user']);
         $isLogin ?
             loadView('home', [
-                'assignmentsFormEachLectures' => $assignmentsFormEachLectures,
+                'assignmentsFormEachLectures' => $assignmentsByLecturer,
                 'assignmentsForEachLevel' => $assignmentsForEachLevel,
                 'submissions' => $submissions,
                 'studentSubmissions' => $studentSubmissions,

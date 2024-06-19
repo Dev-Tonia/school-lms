@@ -5,12 +5,12 @@ function getGradesForAssignments($submissions, $assignments)
 {
     $results = [];
     foreach ($assignments as $assignment) {
-        // Initialize grade as NULL (or any default value)
+        // Initialize grade 
         $grade = '';
 
         foreach ($submissions as $submission) {
 
-            if ($submission->assignment_id === $assignment->id) {
+            if ($submission->assignment_id === $assignment->id && $submission->user_id === $_SESSION['user']['id']) {
                 $grade = $submission->grade;  // Get the actual grade if found
                 break;
             }
@@ -19,6 +19,7 @@ function getGradesForAssignments($submissions, $assignments)
             'course' => $assignment->course,
             'title' => $assignment->title,
             'question' => $assignment->question,
+            'mark_obtainable' => $assignment->mark_obtainable,
             'due_date' => $assignment->due_date,
             'grade' => $grade,
             'id' => $assignment->id
@@ -27,6 +28,27 @@ function getGradesForAssignments($submissions, $assignments)
     return $results;
 }
 $assignments = getGradesForAssignments($studentSubmissions, $assignmentsForEachLevel);
+
+
+
+/**
+ * get the total value 
+ *
+ * @param array $array
+ * @param string $value
+ * @return number
+ */
+function getTotal($array, $value)
+{
+    $total = 0;
+    foreach ($array as $list) {
+        $total += (float)  $list->$value;
+    }
+    return $total;
+}
+$totalScore = getTotal($scores, 'score');
+
+$totalGrade = getTotal($assignmentsForEachLevel, "mark_obtainable");
 
 // to display each value depending on the status of the grade
 function getGradeStatus($grade)
@@ -46,8 +68,8 @@ function getGradeStatus($grade)
         <a href="/" class=" text-decoration-none card-wrapper d-block">
             <div class=" card d-flex shadow justify-content-center align-items-center text-center">
                 <div>
-                    <div class=" text-primary-subtle fw-bold mt-2 fs-5"> <?= $total['totalScore'] ?> /
-                        <?= $total['totalGrade'] ?></div>
+                    <div class=" text-primary-subtle fw-bold mt-2 fs-5"> <?= $totalScore ?> /
+                        <?= $totalGrade ?></div>
                     <p class="mt-2">Score</p>
                 </div>
             </div>
@@ -83,6 +105,8 @@ function getGradeStatus($grade)
                 <th style="white-space: nowrap;">
                     Description</th>
                 <th style="white-space: nowrap;">
+                    Total Mark</th>
+                <th style="white-space: nowrap;">
                     Status</th>
                 <th style="white-space: nowrap;">
                     Due Date</th>
@@ -96,6 +120,7 @@ function getGradeStatus($grade)
                     <td style="white-space: nowrap;"> <?= $assignment['course'] ?></td>
                     <td style="white-space: nowrap;"> <?= $assignment['title'] ?> </td>
                     <td style="min-width:300px;"> <?= $assignment['question'] ?> </td>
+                    <td style="white-space: nowrap;"> <?= $assignment['mark_obtainable'] ?> </td>
                     <td style="white-space: nowrap;"> <?= getGradeStatus($assignment['grade']) ?> </td>
                     <td style="white-space: nowrap;"> <?= $assignment['due_date'] ?> </td>
                     <td style="white-space: nowrap;"><a href="/assignments/detail?id=<?= $assignment['id'] ?>">View</a> </td>
