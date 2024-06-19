@@ -20,7 +20,7 @@
                     </a>
                 </li>
 
-                <?php if ($_SESSION['user']['userType'] ===  'Lecturer') : ?>
+                <?php if ($_SESSION['user']['userType'] ===  'Lecturer' || 'Admin') : ?>
                     <li class="nav-item fw-bold border-2 border-bottom pt-3">
                         <a class="nav-link active d-flex  align-items-center" href="/submissions">
                             <div class="pe-2">

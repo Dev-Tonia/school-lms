@@ -10,25 +10,43 @@ $router->post('/auth/student/register', 'UserController::studentStore');
 $router->post('/auth/lecture/register', 'UserController::staffStore');
 $router->post('/auth/login', 'UserController::auth');
 
-if (
-    isset($_SESSION['user'])
-) {
-
+$user = '';
+if (isset($_SESSION['user'])) {
+    $user = $_SESSION['user'];
+}
+if (!$user) {
+    $router->get('/auth/login', 'UserController::login');
+    exit;
+}
+if ($user) {
     // assignment routes
     $router->get('/assignments', 'AssignmentController::index');
-    $router->get('/assignments/create', 'AssignmentController::create');
     $router->get('/assignments/detail', 'AssignmentController::show');
+}
+if ($user['userType'] === 'Lecturer') {
+    // assignment routes for only lectures
+    $router->get('/assignments/create', 'AssignmentController::create');
     $router->get('/assignments/edit', 'AssignmentController::edit');
     $router->post('/assignments', 'AssignmentController::store');
-    $router->post('/assignments/submit', 'AssignmentController::submit');
     $router->post('/assignments/delete', 'AssignmentController::delete');
 
+    // Submission Routes  lecturer 
+    $router->post('/submissions/grade', 'SubmissionController::grade');
+}
 
-    // Submission Routes
+if ($user['userType'] === 'Lecturer' || 'Admin') {
+    // Submission Routes both lecturer and admin
     $router->get('/submissions', 'SubmissionController::index');
     $router->get('/submissions/detail', 'SubmissionController::show');
-    $router->post('/submissions/grade', 'SubmissionController::grade');
-
-    // auth pages
-    $router->post('/auth/logout', 'UserController::logout');
 }
+if ($user['userType'] === 'Student') {
+    $router->post('/assignments/submit', 'AssignmentController::submit');
+}
+
+
+
+
+
+
+// auth pages
+$router->post('/auth/logout', 'UserController::logout');
