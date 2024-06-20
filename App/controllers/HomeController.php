@@ -18,6 +18,7 @@ class HomeController
     {
         $id = '';
         $class = "";
+
         if (isset($_SESSION['user'])) {
             // getting the user details 
             $id = $_SESSION['user']['id'];
@@ -27,6 +28,7 @@ class HomeController
         $paramForId = [
             'id' => $id,
         ]; // parameter to be pass to the query where id is need
+
 
         // getting all the assignment 
         $assignments = $this->db->query('SELECT * FROM assignment')->fetchAll();
@@ -61,6 +63,11 @@ class HomeController
         $studentSubmissions = array_filter($submissions, function ($submission) use ($id) {
             return $submission->user_id === $id;
         });
+        $paramForUserRole = [
+            'user_type' => 'Student',
+        ];
+        // Select all student
+        $students = $this->db->query('SELECT * FROM users WHERE user_type = :user_type', $paramForUserRole)->fetchAll();
 
 
         $isLogin = isset($_SESSION['user']);
@@ -70,6 +77,8 @@ class HomeController
                 'assignmentsForEachLevel' => $assignmentsForEachLevel,
                 'submissions' => $submissions,
                 'studentSubmissions' => $studentSubmissions,
+                'allAssignment' => $assignments,
+                'allStudent' => $students,
                 'scores' => $scores,
             ]) : loadView('landing');
     }

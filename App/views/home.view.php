@@ -1,11 +1,14 @@
 <?php
+$user = $_SESSION['user'];
+$userRole = $user['userType'];
 
-function getRole($user)
+function getRole($userType)
 {
-  if ($user === 'Student') {
-    return $_SESSION['user']['reg-no'];
+  global $user;
+  if ($userType === 'Student') {
+    return $user['reg-no'];
   } else {
-    return  $_SESSION['user']['userType'];
+    return  $user['userType'];
   }
 }
 
@@ -17,21 +20,27 @@ function getRole($user)
   <div class="col-5 col-md-3">
     <h5 class=""> Welcome back, <?= $_SESSION['user']['firstName'] ?></h5>
     <h5 class=" fs-6 text-center px-2 py-1 text-white rounded-pill uppercase bg-success bg-opacity-20 ">
-      <?= getRole($_SESSION['user']['userType']) ?> </h5>
+      <?= getRole($userRole) ?> </h5>
   </div>
 </div>
 <?php
 
-if ($_SESSION['user']['userType'] ===  'Lecturer') {
+if ($userRole ===  'Lecturer') {
   loadPartial('lecture-home', [
     'submissions' => $submissions,
     'assignmentsFormEachLectures' => $assignmentsFormEachLectures
   ]);
-} else {
+} else if ($userRole === 'Student') {
   loadPartial('student-home', [
     'scores' => $scores,
     'assignmentsForEachLevel' => $assignmentsForEachLevel,
     'studentSubmissions' => $studentSubmissions
+  ]);
+} else {
+  loadPartial('admin-home', [
+    'submissions' => $submissions,
+    'allStudent' => $allStudent,
+    'allAssignment' => $allAssignment
   ]);
 }
 
