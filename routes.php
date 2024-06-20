@@ -18,7 +18,6 @@ if (isset($_SESSION['user'])) {
 // inspectAndDie($user);
 if (!$user) {
     $router->get('/auth/login', 'UserController::login');
-
     return;
 }
 if ($user) {
@@ -49,7 +48,7 @@ if ($user['userType'] === 'Lecturer') {
 if ($user['userType'] === 'Admin') {
     $router->get('/admin/classes', 'AdminController::classes');
     $router->get('/admin/courses', 'AdminController::courses');
-
+    $router->get('/admin/students', 'AdminController::student');
     $router->post('/admin/classes', 'AdminController::addClass');
     $router->post('/admin/courses', 'AdminController::addCourse');
 }

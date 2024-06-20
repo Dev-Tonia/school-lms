@@ -32,6 +32,17 @@ class AdminController
             'courses' => $courses
         ]);
     }
+    public function student()
+    {
+        $paramForUserRole = [
+            'user_type' => 'Student',
+        ];
+        // Select all student
+        $students = $this->db->query('SELECT * FROM users WHERE user_type = :user_type', $paramForUserRole)->fetchAll();
+        loadView('admin/students', [
+            'students' => $students
+        ]);
+    }
     public function addClass()
     {
 
@@ -48,6 +59,7 @@ class AdminController
 
         redirect('/admin/classes');
     }
+
 
     public function addCourse()
     {
