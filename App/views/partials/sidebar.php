@@ -30,6 +30,33 @@
                         </a>
                     </li>
                 <?php endif; ?>
+                <?php if ($_SESSION['user']['userType'] ===   'Admin') : ?>
+                    <li class="nav-item fw-bold border-2 border-bottom pt-3">
+                        <a class="nav-link active d-flex  align-items-center" href="/admin/students">
+                            <div class="pe-2">
+                                <i class="bi bi-people-fill fs-5"></i>
+                            </div>
+                            <span> Students </span>
+                        </a>
+                    </li>
+                    <li class="nav-item fw-bold border-2 border-bottom pt-3">
+                        <a class="nav-link active d-flex  align-items-center" href="/admin/classes">
+                            <div class="pe-2">
+                                <i class="bi bi-mortarboard-fill fs-5"></i>
+                            </div>
+                            <span> Classes </span>
+                        </a>
+                    </li>
+                    <li class="nav-item fw-bold border-2 border-bottom pt-3">
+                        <a class="nav-link active d-flex  align-items-center" href="/admin/courses">
+                            <div class="pe-2">
+                                <i class="bi bi-journal-album fs-5"></i>
+                            </div>
+                            <span> Courses </span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+
                 <li class="nav-item d-flex align-items-center  fw-bold border-2 border-bottom pt-3">
                     <form method="POST" action="/auth/logout">
                         <button type="submit" class="nav-link d-flex  align-items-center">
