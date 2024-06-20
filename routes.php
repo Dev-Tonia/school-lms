@@ -10,18 +10,22 @@ $router->post('/auth/student/register', 'UserController::studentStore');
 $router->post('/auth/lecture/register', 'UserController::staffStore');
 $router->post('/auth/login', 'UserController::auth');
 
+
 $user = '';
 if (isset($_SESSION['user'])) {
-    $user = $_SESSION['user'];
+    $user = $_SESSION['user'] ?? null;
 }
+// inspectAndDie($user);
 if (!$user) {
     $router->get('/auth/login', 'UserController::login');
-    exit;
+
+    return;
 }
 if ($user) {
     // assignment routes
     $router->get('/assignments', 'AssignmentController::index');
     $router->get('/assignments/detail', 'AssignmentController::show');
+    $router->post('/auth/logout', 'UserController::logout');
 }
 if ($user['userType'] === 'Lecturer') {
     // assignment routes for only lectures
@@ -42,11 +46,3 @@ if ($user['userType'] === 'Lecturer' || 'Admin') {
 if ($user['userType'] === 'Student') {
     $router->post('/assignments/submit', 'AssignmentController::submit');
 }
-
-
-
-
-
-
-// auth pages
-$router->post('/auth/logout', 'UserController::logout');

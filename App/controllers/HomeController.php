@@ -16,7 +16,6 @@ class HomeController
     }
     public  function index()
     {
-        // inspectAndDie(password_hash('epassAdmin', PASSWORD_DEFAULT),);
         $id = '';
         $class = "";
         if (isset($_SESSION['user'])) {

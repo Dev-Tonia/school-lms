@@ -6,6 +6,7 @@ require '../helpers.php';
 
 use Framework\Router;
 
+
 // Instantiating the router
 $router = new Router();
 
