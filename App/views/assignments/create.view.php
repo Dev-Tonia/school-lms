@@ -24,11 +24,11 @@
           <label for="course" class="form-label mb-1 fw-medium">
             Course
           </label>
-          <select class="form-select" id="course" value="<?= $assignment['course'] ?? '' ?>" name="course" aria-label="">
+          <select class="form-select" id="course" value="" name="course" aria-label="">
             <option value="">Select course</option>
-            <option value="English">English</option>
-            <option value="Maths">Maths</option>
-            <option value="Physics">Physics</option>
+            <option value="English" <?= $assignment['course'] === 'English' ? 'selected' : '' ?>>English</option>
+            <option value="Maths" <?= $assignment['course'] === 'Maths' ? 'selected' : '' ?>>Maths</option>
+            <option value="Physics" <?= $assignment['course'] === 'Physics' ? 'selected' : '' ?>>Physics</option>
           </select>
           <small class="text-danger"><?= $errors['course'] ?? '' ?> </small>
 
@@ -37,13 +37,13 @@
           <label for="class" class="form-label mb-1 fw-medium">
             Class
           </label>
-          <select class="form-select" id="class" value="<?= $assignment['class'] ?? '' ?>" name="class" aria-label="">
+          <select class="form-select" id="class" name="class" aria-label="">
             <option value="">Select class</option>
-            <option value="year 1">year 1</option>
-            <option value="year 2">year 2</option>
-            <option value="year 3">year 3</option>
-            <option value="year 4">year 4</option>
-            <option value="year 5">year 5</option>
+            <option value="year 1" <?= $assignment['class'] === 'year 1' ? 'selected' : '' ?>>year 1</option>
+            <option value="year 2" <?= $assignment['class'] === 'year 2' ? 'selected' : '' ?>>year 2</option>
+            <option value="year 3" <?= $assignment['class'] === 'year 3' ? 'selected' : '' ?>>year 3</option>
+            <option value="year 4" <?= $assignment['class'] === 'year 4' ? 'selected' : '' ?>>year 4</option>
+            <option value="year 5" <?= $assignment['class'] === 'year 5' ? 'selected' : '' ?>>year 5</option>
           </select>
           <small class="text-danger"><?= $errors['class'] ?? '' ?> </small>
 

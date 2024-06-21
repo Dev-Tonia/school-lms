@@ -19,9 +19,7 @@ class AssignmentController
     }
     public  function index()
     {
-        // Example usage
-        $inputDate = new DateTime('2024-06-22');
-        echo checkDateStatus($inputDate);
+
         $class = "";
         $student_id = '';
         $lec_id = '';
@@ -144,8 +142,13 @@ class AssignmentController
         if (!Validation::string($markObtainable)) {
             $errors['markObtainable'] = 'Obtainable mark is required';
         }
-        // inspectAndDie($grade);
-
+        // Check to make sure that the date is not a paste date 
+        $now = new DateTime();
+        $now->setTime(0, 0, 0);
+        $inputDate = new DateTime($dueDate);
+        if ($inputDate < $now) {
+            $errors['dueDate'] = 'Select a Future due date';
+        }
         // check to make sure there is no error.
         if (!empty($errors)) {
             loadView('/assignments/create', [
@@ -162,6 +165,7 @@ class AssignmentController
             ]);
             exit;
         }
+
 
         // Create user account
         $params = [
