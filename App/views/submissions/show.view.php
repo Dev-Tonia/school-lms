@@ -58,6 +58,7 @@
     <!-- display the submission button -->
 
     <?php if ($_SESSION['user']['userType'] ===  'Lecturer') : ?>
+
         <div class="rounded shadow bg-white p-3 my-3">
             <div class="bg-red  bg-opacity-20">
                 <?= $error  ?? '' ?>

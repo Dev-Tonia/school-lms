@@ -78,4 +78,44 @@ class AdminController
 
         redirect('/admin/courses');
     }
+    public function deleteClass()
+    {
+        $classId = $_POST['id']; //this is coming from the hidden input in the submit form
+        // inspectAndDie($classId);
+        if (!$classId) {
+            // redirect users
+            redirect(
+                '/admin/classes'
+            );
+            exit;
+        }
+        $params = ['id' => $classId];
+
+        $this->db->query('DELETE FROM classes WHERE id = :id', $params);
+
+        // redirect users
+        redirect(
+            '/admin/classes'
+        );
+    }
+    public function deleteCourse()
+    {
+        $courseId = $_POST['id']; //this is coming from the hidden input in the submit form
+        // inspectAndDie($classId);
+        if (!$courseId) {
+            // redirect users
+            redirect(
+                '/admin/courses'
+            );
+            exit;
+        }
+        $params = ['id' => $courseId];
+
+        $this->db->query('DELETE FROM courses WHERE id = :id', $params);
+
+        // redirect users
+        redirect(
+            '/admin/courses'
+        );
+    }
 }

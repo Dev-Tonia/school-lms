@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use Framework\Database;
 use Framework\Validation;
+use  DateTime;
 
 class AssignmentController
 {
@@ -18,7 +19,9 @@ class AssignmentController
     }
     public  function index()
     {
-
+        // Example usage
+        $inputDate = new DateTime('2024-06-22');
+        echo checkDateStatus($inputDate);
         $class = "";
         $student_id = '';
         $lec_id = '';
@@ -106,6 +109,10 @@ class AssignmentController
      */
     public function store()
     {
+
+
+
+
         $class    = filter_input(INPUT_POST, 'class', FILTER_SANITIZE_SPECIAL_CHARS);
         $title    = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_SPECIAL_CHARS);
         $question    = filter_input(INPUT_POST, 'question', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -201,10 +208,93 @@ class AssignmentController
     public function edit()
     {
         $assId = htmlspecialchars($_GET['id'] ?? '');
-        //         if (!$assId) {
-        // redirect('/assignments')            exit;
-        //         }
-        inspectAndDie($assId);
+        $assParams = [
+            'id' =>  $assId
+        ];
+        // getting all the assignments
+        $assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $assParams)->fetch();
+        loadView('assignments/edit', [
+            'assignment' => $assignment
+        ]);
+    }
+
+    public function update()
+    {
+        $isPutRequest = isset($_POST['_method']) && $_POST['_method'] === 'put';
+        $id = '';
+        if ($isPutRequest) {
+            $id = $_POST['id'];
+        }
+        if (!$id) {
+            redirect('/assignments');
+        }
+        $class    = filter_input(INPUT_POST, 'class', FILTER_SANITIZE_SPECIAL_CHARS);
+        $title    = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_SPECIAL_CHARS);
+        $question    = filter_input(INPUT_POST, 'question', FILTER_SANITIZE_SPECIAL_CHARS);
+        $course    = filter_input(INPUT_POST, 'course', FILTER_SANITIZE_SPECIAL_CHARS);
+        $markObtainable    = filter_input(INPUT_POST, 'mark-obtainable', FILTER_SANITIZE_SPECIAL_CHARS);
+        $dueDate    = filter_input(INPUT_POST, 'dueDate');
+
+        // check if the user is login
+        if (!isset($_SESSION['user'])) {
+            redirect('/');
+        }
+        $errors = [];
+        // validate the user input
+        if (!Validation::string($class)) {
+            $errors['class'] = 'Class is required';
+        }
+        if (!Validation::string($title)) {
+            $errors['title'] = 'Title is required';
+        }
+        if (!Validation::string($question)) {
+            $errors['question'] = 'Question is required';
+        }
+        if (!Validation::string($course)) {
+            $errors['course'] = 'Course is required';
+        }
+        if (!Validation::string($dueDate)) {
+            $errors['dueDate'] = 'Input a due date';
+        }
+        if (!Validation::string($markObtainable)) {
+            $errors['markObtainable'] = 'Obtainable mark is required';
+        }
+        // inspectAndDie($grade);
+        // getting all the assignments
+        $assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', ['id' => $id])->fetch();
+        // check to make sure there is no error.
+        if (!empty($errors)) {
+            loadView('/assignments/create', [
+                'errors' => $errors,
+                'assignment' => $assignment
+            ]);
+            exit;
+        }
+
+        // Create user account
+        $params = [
+            'id' => $id,
+            'title' => $title,
+            'question' => $question,
+            'class' => $class,
+            'course' => $course,
+            'due_date' => $dueDate,
+            'mark_obtainable' => $markObtainable,
+            'user_id' => $_SESSION['user']['id']
+        ];
+        $this->db->query('UPDATE  assignment SET title = :title, question = :question, class =:class, course= :course, 
+        due_date = :due_date, mark_obtainable = :mark_obtainable ,user_id = :user_id WHERE id = :id', $params);
+
+
+        redirect('/assignments');
+
+        /* 
+        $isPutRequest = $_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['_method'] ?? '') === 'put';
+
+         $sql = 'UPDATE books SET title = :title, author = :author,genre = :genre, date = :date WHERE id = :id';
+        $stmt = $pdo->prepare($sql);
+        $params = ["title" => $title, "author" => $author, 'genre' => $genre, 'date' => $date, 'id' => $id];
+        $stmt->execute($params);*/
     }
     public function delete()
     {

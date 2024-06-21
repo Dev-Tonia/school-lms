@@ -43,19 +43,21 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($courses as $index => $class) : ?>
+            <?php foreach ($courses as $index => $course) : ?>
                 <tr>
 
                     <td style="white-space: nowrap;" class="w-25"> <?= $index + 1 ?> </td>
-                    <td style="white-space: nowrap;" class="w-25"> <?= $class->course_code ?> </td>
+                    <td style="white-space: nowrap;" class="w-25"> <?= $course->course_code ?> </td>
 
-                    <td style="white-space: nowrap;" class="w-25"> <?= $class->course_name ?> </td>
+                    <td style="white-space: nowrap;" class="w-25"> <?= $course->course_name ?> </td>
 
                     <td class="w-25 gap-1" style="white-space: nowrap;">
-                        <span class="bg-success rounded-pill d-inline-block py-1 px-3"><a href="" class="text-white text-decoration-none">Edit</a></span>
+                        <form method="POST" action="/admin/delete-course" class=" d-inline-block">
+                            <input type="hidden" name="id" value="<?= $course->id ?>">
 
-                        <span class="bg-danger text-white rounded-pill d-inline-block py-1 px-3"><a href="" class="text-white text-decoration-none">
-                                Delete</a></span>
+                            <button type="submit" class="bg-danger border-0 text-white rounded-pill d-inline-block py-1 px-3">
+                                Delete</button>
+                        </form>
                     </td>
 
                 </tr>
@@ -81,7 +83,7 @@
                         <label for="course" class="form-label mb-1 fw-medium">
                             New course
                         </label>
-                        <input type="text" required id="course" name="course" class="form-control" placeholder="Gns 101" />
+                        <input type="text" required id="course" name="course" class="form-control" placeholder="English" />
                     </div>
                     <div class="mb-3">
                         <label for="code" class="form-label mb-1 fw-medium">
@@ -94,15 +96,11 @@
                     </button>
                 </form>
             </div>
-            <!-- <div class="modal-footer">
-                </div>  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Close
-                </button>
-            </div> -->
+            /admin/delete-course>
         </div>
     </div>
 </div>
-</div>
+
 <?php
 loadPartial('layout-footer');
 loadPartial('footer');

@@ -73,7 +73,20 @@ class SubmissionController
         // getting the submission to grade
         $submission = $this->db->query('SELECT * FROM submissions WHERE id = :id', $param)->fetch();
 
+        // getting the assignment
+        $assParams = [
+            'id' => $submission->assignment_id,
+        ];
+        $assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $assParams)->fetch();
 
+
+        if ($score > $assignment->mark_obtainable) {
+            $_SESSION['error'] = [
+                'errorMessage' => 'Score is greater than the total mark obtainable'
+            ];
+            redirect('/submissions');
+            exit;
+        }
         $scoreParams = [
             'student_id' => $submission->user_id,
             'assignment_id' => $submission->assignment_id,

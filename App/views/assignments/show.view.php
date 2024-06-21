@@ -12,7 +12,7 @@
                 <?php if ($_SESSION['user']['userType'] ===  'Lecturer') : ?>
 
                     <div class="d-flex align-item-center ">
-                        <a href="/assignments/create?id=<?= $assignment->id ?>" class="px-4 py-2 bg-success me-2  text-white rounded">Edit</a>
+                        <a href="/assignments/edit?id=<?= $assignment->id ?>" class="px-4 py-2 bg-success me-2  text-white rounded">Edit</a>
                         <!-- Delete Form -->
                         <form method="POST" action="/assignments/delete">
                             <input type="hidden" name="id" value="<?= $assignment->id ?>">

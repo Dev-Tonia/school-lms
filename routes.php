@@ -41,6 +41,8 @@ if ($user['userType'] === 'Lecturer') {
     $router->get('/assignments/edit', 'AssignmentController::edit');
     $router->post('/assignments', 'AssignmentController::store');
     $router->post('/assignments/delete', 'AssignmentController::delete');
+    $router->post('/assignments/update', 'AssignmentController::update');
+
 
     // Submission Routes  lecturer 
     $router->post('/submissions/grade', 'SubmissionController::grade');
@@ -49,6 +51,9 @@ if ($user['userType'] === 'Admin') {
     $router->get('/admin/classes', 'AdminController::classes');
     $router->get('/admin/courses', 'AdminController::courses');
     $router->get('/admin/students', 'AdminController::student');
+
     $router->post('/admin/classes', 'AdminController::addClass');
     $router->post('/admin/courses', 'AdminController::addCourse');
+    $router->post('/admin/delete-class', 'AdminCOntroller::deleteClass');
+    $router->post('/admin/delete-course', 'AdminCOntroller::deleteCourse');
 }

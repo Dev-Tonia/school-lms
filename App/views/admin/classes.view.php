@@ -1,4 +1,6 @@
-<?php loadPartial('layout') ?>
+<?php loadPartial('layout');
+$editId = '';
+?>
 
 
 
@@ -18,14 +20,7 @@
             </div>
 
         </button>
-        <!-- <div class="border border-warning border-2 rounded d-inline-block py-1 px-3">
-            <a class=" d-flex  align-items-center text-success fw-bold text-decoration-none" href="/admin/create">
-                <div class="pe-2">
-                    <i class="bi bi-pen-fill fs-6"></i>
-                </div>
-                <span class=" "> New Assignment </span>
-            </a>
-        </div> -->
+
     </div>
 </div>
 <section class=" px-2 py-2 shadow my-5 table-responsive rounded bg-success bg-opacity-10">
@@ -47,10 +42,18 @@
                     <td style="white-space: nowrap;" class="w-50"> <?= $class->class_name ?> </td>
 
                     <td class="w-25 gap-1" style="white-space: nowrap;">
-                        <span class="bg-success rounded-pill d-inline-block py-1 px-3"><a href="" class="text-white text-decoration-none">Edit</a></span>
+                        <!-- <button class="bg-success rounded-pill d-inline-block border-0 text-white py-1 px-3" data-bs-toggle="modal" data-bs-target="#editModal">
+                         
+                            Edit
+                        </button> -->
+                        <!-- Delete Form -->
+                        <form method="POST" action="/admin/delete-class" class=" d-inline-block">
+                            <input type="hidden" name="id" value="<?= $class->id ?>">
 
-                        <span class="bg-danger text-white rounded-pill d-inline-block py-1 px-3"><a href="" class="text-white text-decoration-none">
-                                Delete</a></span>
+                            <button type="submit" class="bg-danger border-0 text-white rounded-pill d-inline-block py-1 px-3">
+                                Delete</button>
+                        </form>
+
                     </td>
 
                 </tr>
@@ -59,6 +62,9 @@
     </table>
 
 </section>
+
+<!-- Modal For Adding class detail -->
+
 
 <!-- Modal For Adding class detail -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -92,7 +98,8 @@
         </div>
     </div>
 </div>
-</div>
+
+
 <?php
 loadPartial('layout-footer');
 loadPartial('footer');

@@ -4,9 +4,19 @@
     <div class=" d-flex justify-content-between align-items-center ">
         <h5 class=" fw-bold "> All Submission</h5>
     </div>
+    <?php
+    if (isset($_SESSION['error'])) : ?>
+        <div class=" bg-danger px-4 py-2 text-white">
+            <?php
+            echo $_SESSION['error']['errorMessage'];
+            unset($_SESSION['error']);
+            ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <section class=" px-2 py-2 shadow my-5 rounded table-responsive bg-success bg-opacity-10">
+
     <h6 class=" ">All Submission</h6>
 
     <table class="table table-light">

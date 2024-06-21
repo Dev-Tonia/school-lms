@@ -135,3 +135,17 @@ function getGradeStatus($grade)
         return 'Graded: ' . $grade;
     }
 }
+// check if date is the past
+
+function checkDateStatus($inputDate)
+{
+    $now = new DateTime();
+    $now->setTime(0, 0, 0); // set time to 00:00:00
+    if ($inputDate > $now) {
+        return "future";
+    } elseif ($inputDate < $now) {
+        return "past";
+    } else {
+        return "present";
+    }
+}
