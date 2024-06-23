@@ -37,7 +37,7 @@ loadPartial('layout');
                     <td style="white-space: nowrap;"> <?= $student->last_name ?> </td>
                     <td style="white-space: nowrap;"> <?= $student->email ?> </td>
                     <td style="white-space: nowrap;"> <?= $student->reg_no ?> </td>
-                    <td style="white-space: nowrap;"> <?= $student->level ?> </td>
+                    <td style="white-space: nowrap;"> <?= $student->class_name ?> </td>
                     <td style="white-space: nowrap;"><?= $student->created_at ?>"</td>
                 </tr>
             <?php endforeach; ?>

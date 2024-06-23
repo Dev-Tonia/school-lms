@@ -43,9 +43,9 @@
         <tbody>
             <?php foreach ($submissions as $submission) : ?>
                 <tr>
-                    <td style="white-space: nowrap;"> <?= $submission->course ?></td>
+                    <td style="white-space: nowrap;"> <?= $submission->course_code ?></td>
                     <td style="white-space: nowrap;"> <?= $submission->title ?> </td>
-                    <td style="white-space: nowrap;"> <?= $submission->class ?> </td>
+                    <td style="white-space: nowrap;"> <?= $submission->class_name ?> </td>
                     <td style="white-space: nowrap;"> <?= $submission->first_name ?> <?= $submission->last_name ?></td>
                     <td style="white-space: nowrap;"> <?= $submission->created_at ?></td>
                     <td style="white-space: nowrap;"><a href="/submissions/detail?id=<?= $submission->id ?>">View</a> </td>

@@ -121,12 +121,12 @@ class UserController
             'last_name' => $last_name,
             'email' => $email,
             'reg_no' => $reg_no,
-            'level' => $level,
+            'class_id' => $level,
             'password' => password_hash($password, PASSWORD_DEFAULT),
             'user_type' => $user_type
         ];
-        $this->db->query('INSERT INTO users (first_name, last_name, email,  reg_no, level, user_type, password) VALUES (:first_name, :last_name, 
-            :email,  :reg_no, :level, :user_type,  :password)', $params);
+        $this->db->query('INSERT INTO users (first_name, last_name, email,  reg_no, class_id, user_type, password) VALUES (:first_name, :last_name, 
+            :email,  :reg_no, :class_id, :user_type,  :password)', $params);
 
         redirect('/auth/login');
     }

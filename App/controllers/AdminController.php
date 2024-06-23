@@ -38,7 +38,20 @@ class AdminController
             'user_type' => 'Student',
         ];
         // Select all student
-        $students = $this->db->query('SELECT * FROM users WHERE user_type = :user_type', $paramForUserRole)->fetchAll();
+        $students = $this->db->query(' SELECT  u.id AS user_id,  u.first_name,  u.last_name,  u.email,  u.reg_no,  u.employee_no,  u.user_type,  u.created_at  ,
+            c.class_name
+        FROM 
+            users u
+        LEFT JOIN 
+            classes c ON u.class_id = c.id WHERE user_type = :user_type', $paramForUserRole)->fetchAll();
+
+        //     $stmt = $this->db->prepare('
+
+        //     WHERE 
+        //         u.user_type = :user_type
+        // ');
+
+
         loadView('admin/students', [
             'students' => $students
         ]);

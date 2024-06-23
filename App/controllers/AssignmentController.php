@@ -147,10 +147,6 @@ class AssignmentController
      */
     public function store()
     {
-
-
-
-
         $class    = filter_input(INPUT_POST, 'class', FILTER_SANITIZE_SPECIAL_CHARS);
         $title    = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_SPECIAL_CHARS);
         $question    = filter_input(INPUT_POST, 'question', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -217,7 +213,7 @@ class AssignmentController
             'mark_obtainable' => $markObtainable,
             'user_id' => $_SESSION['user']['id']
         ];
-        $this->db->query('INSERT INTO assignment (title, question, class, course, due_date, mark_obtainable ,user_id ) VALUES
+        $this->db->query('INSERT INTO assignment (title, question, class_id, course_id, due_date, mark_obtainable ,user_id ) VALUES
                                                  (:title, :question, :class, :course, :due_date, :mark_obtainable, :user_id)', $params);
 
 
@@ -255,10 +251,15 @@ class AssignmentController
         $assParams = [
             'id' =>  $assId
         ];
+        $classes = $this->db->query('SELECT * FROM classes')->fetchAll();
+        $courses = $this->db->query('SELECT * FROM courses')->fetchAll();
+
         // getting all the assignments
         $assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $assParams)->fetch();
         loadView('assignments/edit', [
-            'assignment' => $assignment
+            'assignment' => $assignment,
+            'classes' => $classes,
+            'courses' => $courses
         ]);
     }
 
@@ -331,7 +332,7 @@ class AssignmentController
             'mark_obtainable' => $markObtainable,
             'user_id' => $_SESSION['user']['id']
         ];
-        $this->db->query('UPDATE  assignment SET title = :title, question = :question, class =:class, course= :course, 
+        $this->db->query('UPDATE  assignment SET title = :title, question = :question, class_id =:class, course_id= :course, 
         due_date = :due_date, mark_obtainable = :mark_obtainable ,user_id = :user_id WHERE id = :id', $params);
 
 

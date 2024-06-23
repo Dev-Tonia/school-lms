@@ -38,13 +38,6 @@ class SubmissionController
             'id' => $id
         ];
         // getting the submission
-        // $submission = $this->db->query('SELECT s.id AS submission_id, s.user_id,  s.assignment_id, s.file_path, s.grade, s.created_at, u.id, 
-        // u.last_name, a.title, a.question, a.course, a.class, a.mark_obtainable
-        // FROM submissions s
-        // JOIN users u ON s.user_id = u.id
-        // JOIN assignment a ON s.assignment_id = a.id 
-        // WHERE s.id = :id', $params)->fetch();
-
         $submission = $this->db->query('SELECT  s.id , s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
 a.title, a.question, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
  FROM  submissions s 

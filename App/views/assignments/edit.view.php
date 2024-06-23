@@ -29,9 +29,9 @@
                     </label>
                     <select class="form-select" id="course" value="" name="course" aria-label="">
                         <option value=""> Select course</option>
-                        <option value="English" <?= $assignment->course === 'English' ? 'selected' : ''; ?>>English</option>
-                        <option value="Maths" <?= $assignment->course === 'Maths' ? 'selected' : ''; ?>>Maths</option>
-                        <option value="Physics" <?= $assignment->course === 'Physics' ? 'selected' : ''; ?>>Physics</option>
+                        <?php foreach ($courses as $course) : ?>
+                            <option value="<?= $course->id ?>" <?= $course->id == $assignment->course_id ? 'selected' : '' ?>><?= $course->course_code ?></option>
+                        <?php endforeach; ?>
                     </select>
                     <small class="text-danger"><?= $errors['course'] ?? '' ?> </small>
 
@@ -41,12 +41,10 @@
                         Class
                     </label>
                     <select class="form-select" id="class" value="" name="class" aria-label="">
-                        <option value=""> "Select Class"</option>
-                        <option value="year 1" <?= $assignment->class === 'year 1' ? 'selected' : '' ?>>year 1</option>
-                        <option value="year 2 " <?= $assignment->class === 'year 2' ? 'selected' : '' ?>>year 2</option>
-                        <option value="year 3" <?= $assignment->class === 'year 3' ? 'selected' : '' ?>>year 3</option>
-                        <option value="year 4" <?= $assignment->class === 'year 4' ? 'selected' : '' ?>>year 4</option>
-                        <option value="year 5" <?= $assignment->class === 'year 5' ? 'selected' : '' ?>>year 5</option>
+                        <option value=""> Select Class</option>
+                        <?php foreach ($classes as $class) : ?>
+                            <option value="<?= $class->id ?>" <?= $class->id === $assignment->class_id ? 'selected' : '' ?>><?= $class->class_name ?></option>
+                        <?php endforeach; ?>
                     </select>
                     <small class="text-danger"><?= $errors['class'] ?? '' ?> </small>
 
