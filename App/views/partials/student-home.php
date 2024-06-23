@@ -16,7 +16,7 @@ function getTotal($array, $value)
     }
     return $total;
 }
-$totalScore = getTotal($scores, 'score');
+$totalScore = getTotal($studentSubmissions, 'grade');
 
 $totalGrade = getTotal($assignmentsForEachLevel, "mark_obtainable");
 

@@ -21,37 +21,54 @@ class AssignmentController
     {
 
         $class = "";
-        $student_id = '';
         $lec_id = '';
         if (isset($_SESSION['user'])) {
+
             // getting the user details 
-            $class =   $_SESSION['user']['level'];
-            $student_id =   $_SESSION['user']['userType'] === 'Student' ?  $_SESSION['user']['id'] : '';
+            $class =   $_SESSION['user']['classId'];
             $lec_id =   $_SESSION['user']['userType'] === 'Lecturer' ?  $_SESSION['user']['id'] : '';
         }
-        $paramForId = [
-            'id' => $student_id,
-        ];
+
         // getting all the assignments for the lectures
-        $assignments = $this->db->query('SELECT * FROM assignment')->fetchAll();
+
+        $assignments = $this->db->query(' SELECT 
+            a.id ,
+            a.user_id, 
+            a.title, 
+            a.question, 
+            a.mark_obtainable, 
+            a.due_date, 
+            a.class_id, 
+            c.class_name, 
+            a.course_id, 
+            co.course_code   FROM 
+            assignment a
+        LEFT JOIN 
+            classes c ON a.class_id = c.id
+        LEFT JOIN 
+            courses co ON a.course_id = co.id
+    ')->fetchAll();
 
         // filtering all the assignment to get each level assignment
         $filterAssignmentForStudent = array_filter($assignments, function ($assignment) use ($class) {
-            return $assignment->class === $class;
+            return $assignment->class_id === $class;
         });
+
         // filtering all the assignment to get each level assignment
         $filterAssignmentForEachLecture = array_filter($assignments, function ($assignment) use ($lec_id) {
-            return $assignment->id === $lec_id;
+            return $assignment->user_id === $lec_id;
         });
 
         // getting all submission
-        $submissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
-      a.title, a.question, a.course, a.class, a.mark_obtainable
-      FROM submissions s
-      JOIN users u ON s.user_id = u.id
-      JOIN assignment a ON s.assignment_id = a.id 
-      WHERE s.user_id = :id', $paramForId)->fetchAll();
-        // inspectAndDie($submissions);
+        $submissions = $this->db->query('SELECT  s.id AS submission_id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
+        a.title, a.question, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
+         FROM  submissions s 
+         JOIN users u ON s.user_id = u.id
+         JOIN assignment a ON s.assignment_id = a.id 
+         LEFT JOIN  classes c ON a.class_id = c.id
+         LEFT JOIN  courses co ON a.course_id = co.id')->fetchAll();
+
+
         $assignmentsForEachStudent = getGradesForAssignments(assignments: $filterAssignmentForStudent, submissions: $submissions);
 
         loadView('assignments/index', [
@@ -59,11 +76,16 @@ class AssignmentController
             'assignmentsForEachStudent' => $assignmentsForEachStudent,
             'assignmentsForEachLecture' => $filterAssignmentForEachLecture,
         ]);
-        // loadView('assignments/index');
     }
     public  function create()
     {
-        loadView('assignments/create');
+        $classes = $this->db->query('SELECT * FROM classes')->fetchAll();
+        $courses = $this->db->query('SELECT * FROM courses')->fetchAll();
+
+        loadView('assignments/create', [
+            'classes' => $classes,
+            "courses" => $courses
+        ]);
     }
     public  function show()
     {
@@ -79,6 +101,24 @@ class AssignmentController
         ];
         // getting all the assignments
         $this->assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $assParams)->fetch();
+        $assignment = $this->db->query(' SELECT 
+            a.id ,
+            a.user_id, 
+            a.title, 
+            a.question, 
+            a.mark_obtainable, 
+            a.due_date, 
+            a.class_id, 
+            c.class_name, 
+            a.course_id, 
+            a.created_at,
+            co.course_code   FROM 
+            assignment a
+        LEFT JOIN 
+            classes c ON a.class_id = c.id
+        LEFT JOIN 
+            courses co ON a.course_id = co.id
+    WHERE a.id = :id', $assParams)->fetch();
         // Check if listing exists
         if (!$this->assignment) {
             ErrorController::notFound('assignment not found');
@@ -95,7 +135,7 @@ class AssignmentController
             $isSubmitted = true;
         }
         loadView('assignments/show', [
-            'assignment' => $this->assignment,
+            'assignment' => $assignment,
             'isSubmitted' => $isSubmitted
         ]);
     }
@@ -243,6 +283,8 @@ class AssignmentController
         if (!isset($_SESSION['user'])) {
             redirect('/');
         }
+
+
         $errors = [];
         // validate the user input
         if (!Validation::string($class)) {
@@ -263,9 +305,12 @@ class AssignmentController
         if (!Validation::string($markObtainable)) {
             $errors['markObtainable'] = 'Obtainable mark is required';
         }
-        // inspectAndDie($grade);
+
+
         // getting all the assignments
         $assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', ['id' => $id])->fetch();
+
+
         // check to make sure there is no error.
         if (!empty($errors)) {
             loadView('/assignments/create', [
@@ -291,14 +336,6 @@ class AssignmentController
 
 
         redirect('/assignments');
-
-        /* 
-        $isPutRequest = $_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['_method'] ?? '') === 'put';
-
-         $sql = 'UPDATE books SET title = :title, author = :author,genre = :genre, date = :date WHERE id = :id';
-        $stmt = $pdo->prepare($sql);
-        $params = ["title" => $title, "author" => $author, 'genre' => $genre, 'date' => $date, 'id' => $id];
-        $stmt->execute($params);*/
     }
     public function delete()
     {

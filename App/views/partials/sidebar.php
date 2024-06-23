@@ -1,3 +1,7 @@
+<?php $user = $_SESSION['user']['userType'] ?>
+
+
+
 <aside class="col-6 col-md-3 col-lg-2 border-end border-4 position-fixed z-2 d-none d-md-block bg-light
 " style="height: 100vh; padding-bottom: 40px;">
     <div class="overflow-y-auto h-100">
@@ -20,7 +24,7 @@
                     </a>
                 </li>
 
-                <?php if ($_SESSION['user']['userType'] ===  'Lecturer' || 'Admin') : ?>
+                <?php if ($user ===  'Lecturer' || $user === 'Admin') : ?>
                     <li class="nav-item fw-bold border-2 border-bottom pt-3">
                         <a class="nav-link active d-flex  align-items-center" href="/submissions">
                             <div class="pe-2">
@@ -30,7 +34,7 @@
                         </a>
                     </li>
                 <?php endif; ?>
-                <?php if ($_SESSION['user']['userType'] ===   'Admin') : ?>
+                <?php if ($user ===   'Admin') : ?>
                     <li class="nav-item fw-bold border-2 border-bottom pt-3">
                         <a class="nav-link active d-flex  align-items-center" href="/admin/students">
                             <div class="pe-2">

@@ -29,11 +29,11 @@
         <div class="mb-0 d-flex justify-content-between align-items-center">
             <p> <span class=" fw-bold">Due date:</span> <span class=" fw-medium"><?= $assignment->due_date ?> </span>
             </p>
-            <p>Mark Obtainable: <?= $submission->mark_obtainable ?? '' ?></p>
+            <p>Total Mark: <?= $assignment->mark_obtainable ?? '' ?></p>
         </div>
         <div class="mb-3 fw-medium d-flex justify-content-between align-items-center">
-            <p>course: <?= $assignment->course  ?></p>
-            <p>Level: <?= $assignment->class  ?></p>
+            <p>course: <?= $assignment->course_code  ?></p>
+            <p>Level: <?= $assignment->class_name  ?></p>
         </div>
         <div class=" fw-bold fs-6">
             <span class=" ">Assignment Title:</span> <span class=""><?= $assignment->title ?> </span>

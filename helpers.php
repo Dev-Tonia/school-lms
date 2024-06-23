@@ -113,7 +113,7 @@ function getGradesForAssignments(array $submissions, array $assignments)
             }
         }
         $results[] = [
-            'course' => $assignment->course,
+            'course_code' => $assignment->course_code,
             'title' => $assignment->title,
             'question' => $assignment->question,
             'mark_obtainable' => $assignment->mark_obtainable,

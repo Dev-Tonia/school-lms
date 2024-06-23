@@ -17,12 +17,14 @@ class SubmissionController
     }
     public  function index()
     {
-        $submissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path,s.grade , s.created_at, u.first_name, u.last_name, 
-        a.title, a.question, a.course, a.class, a.mark_obtainable
-        FROM submissions s
-        JOIN users u ON s.user_id = u.id
-        JOIN assignment a ON s.assignment_id = a.id;
-        ')->fetchAll();
+        $submissions = $this->db->query('SELECT  s.id , s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
+        a.title, a.question, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
+         FROM  submissions s 
+         JOIN users u ON s.user_id = u.id
+         JOIN assignment a ON s.assignment_id = a.id 
+         LEFT JOIN  classes c ON a.class_id = c.id
+         LEFT JOIN  courses co ON a.course_id = co.id')->fetchAll();
+
         loadView('submissions/index', [
             'submissions' => $submissions,
         ]);
@@ -36,12 +38,20 @@ class SubmissionController
             'id' => $id
         ];
         // getting the submission
-        $submission = $this->db->query('SELECT s.id AS submission_id, s.user_id,  s.assignment_id, s.file_path, s.grade, s.created_at, u.id, 
-        u.last_name, a.title, a.question, a.course, a.class, a.mark_obtainable
-        FROM submissions s
-        JOIN users u ON s.user_id = u.id
-        JOIN assignment a ON s.assignment_id = a.id 
-        WHERE s.id = :id', $params)->fetch();
+        // $submission = $this->db->query('SELECT s.id AS submission_id, s.user_id,  s.assignment_id, s.file_path, s.grade, s.created_at, u.id, 
+        // u.last_name, a.title, a.question, a.course, a.class, a.mark_obtainable
+        // FROM submissions s
+        // JOIN users u ON s.user_id = u.id
+        // JOIN assignment a ON s.assignment_id = a.id 
+        // WHERE s.id = :id', $params)->fetch();
+
+        $submission = $this->db->query('SELECT  s.id , s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
+a.title, a.question, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
+ FROM  submissions s 
+ JOIN users u ON s.user_id = u.id
+ JOIN assignment a ON s.assignment_id = a.id 
+ LEFT JOIN  classes c ON a.class_id = c.id
+ LEFT JOIN  courses co ON a.course_id = co.id  WHERE s.id = :id', $params)->fetch();
 
 
         $isScore = false;
@@ -87,19 +97,13 @@ class SubmissionController
             redirect('/submissions');
             exit;
         }
-        $scoreParams = [
-            'student_id' => $submission->user_id,
-            'assignment_id' => $submission->assignment_id,
-            'submission_id' => $submission->id,
-            'score' => (float) $score
-        ];
+
 
         $subParams = [
             'grade' => $score,
             'id' => $id
         ];
-        $this->db->query('INSERT INTO scores (student_id, assignment_id, submission_id, score ) VALUES
-                                             (:student_id, :assignment_id, :submission_id, :score)', $scoreParams);
+
         $this->db->query('UPDATE submissions SET grade = :grade WHERE id = :id', $subParams);
         redirect('/submissions');
     }

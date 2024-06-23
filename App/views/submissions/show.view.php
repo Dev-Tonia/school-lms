@@ -20,8 +20,8 @@
             <p>Mark Obtainable: <?= $submission->mark_obtainable ?></p>
         </div>
         <div class="mb-3 fw-medium ">
-            <p>course: <?= $submission->course  ?></p>
-            <p>Level: <?= $submission->class  ?></p>
+            <p>course: <?= $submission->course_code  ?></p>
+            <p>Level: <?= $submission->class_name  ?></p>
         </div>
         <div class=" fw-bold fs-6">
             <span class=" ">Assignment Title:</span> <span class=""><?= $submission->title ?> </span>

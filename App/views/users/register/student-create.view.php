@@ -47,11 +47,9 @@ loadPartial('navbar');
                 </label>
                 <select class="form-select" id="level" value="<?= $user['level'] ?? '' ?>" name="level" aria-label="">
                     <option value="">Select your current level</option>
-                    <option value="year 1">year 1</option>
-                    <option value="year 2">year 2</option>
-                    <option value="year 3">year 3</option>
-                    <option value="year 4">year 4</option>
-                    <option value="year 5">year 5</option>
+                    <?php foreach ($classes as $class) : ?>
+                        <option value="<?= $class->id ?>"><?= $class->class_name ?></option>
+                    <?php endforeach; ?>
                 </select>
                 <small class=" text-danger"><?= $errors['level'] ?? '' ?></small>
 

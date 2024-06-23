@@ -22,17 +22,26 @@ class HomeController
         if (isset($_SESSION['user'])) {
             // getting the user details 
             $id = $_SESSION['user']['id'];
-            $class =  $_SESSION['user']['level'];
+            $class =  $_SESSION['user']['classId'];
         }
-
-        $paramForId = [
-            'id' => $id,
-        ]; // parameter to be pass to the query where id is need
-
-
         // getting all the assignment 
-        $assignments = $this->db->query('SELECT * FROM assignment')->fetchAll();
-
+        $assignments = $this->db->query(' SELECT 
+        a.id ,
+        a.user_id, 
+        a.title, 
+        a.question, 
+        a.mark_obtainable, 
+        a.due_date, 
+        a.class_id, 
+        c.class_name, 
+        a.course_id, 
+        co.course_code   FROM 
+        assignment a
+    LEFT JOIN 
+        classes c ON a.class_id = c.id
+    LEFT JOIN 
+        courses co ON a.course_id = co.id
+')->fetchAll();
         // filtering all the assignment to get each lecture assignment
         $assignmentsByLecturer = array_filter($assignments, function ($assignment) use ($id) {
             return $assignment->user_id === $id;
@@ -40,23 +49,18 @@ class HomeController
 
         // filtering all the assignment to get each level assignment
         $assignmentsForEachLevel = array_filter($assignments, function ($assignment) use ($class) {
-            return $assignment->class === $class;
+            return $assignment->class_id === $class;
         });
 
         // getting all scores for the student  
-        $scores = $this->db->query('SELECT s.id AS score_id, s.id, s.student_id, s.assignment_id, s.score, u.first_name, 
-        a.title, a.question, a.course, a.class
-        FROM scores s
-        JOIN users u ON s.student_id = u.id
-        JOIN assignment a ON s.assignment_id = a.id
-        WHERE  s.student_id = :id', $paramForId)->fetchAll();
 
-        // getting all submission
-        $submissions = $this->db->query('SELECT s.id AS submission_id, s.id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
-        a.title, a.question, a.course, a.class, a.mark_obtainable
-        FROM submissions s
-        JOIN users u ON s.user_id = u.id
-        JOIN assignment a ON s.assignment_id = a.id')->fetchAll();
+        $submissions = $this->db->query('SELECT  s.id AS submission_id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
+        a.title, a.question, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
+         FROM  submissions s 
+         JOIN users u ON s.user_id = u.id
+         JOIN assignment a ON s.assignment_id = a.id 
+         LEFT JOIN  classes c ON a.class_id = c.id
+         LEFT JOIN  courses co ON a.course_id = co.id')->fetchAll();
 
 
         // filtering all the submission to get each student submission
@@ -79,7 +83,6 @@ class HomeController
                 'studentSubmissions' => $studentSubmissions,
                 'allAssignment' => $assignments,
                 'allStudent' => $students,
-                'scores' => $scores,
             ]) : loadView('landing');
     }
 }

@@ -30,7 +30,11 @@ class UserController
      */
     public function studentCreate()
     {
-        loadView('users/register/student-create');
+        $classes = $this->db->query('SELECT * FROM classes')->fetchAll();
+
+        loadView('users/register/student-create', [
+            'classes' => $classes
+        ]);
     }
 
     /**
@@ -45,6 +49,8 @@ class UserController
 
     public function studentStore()
     {
+        // the classes from the db
+        // $classes = $this->db->query('SELECT * FROM classes')->fetchAll();
 
         $first_name = filter_input(INPUT_POST, 'firstName', FILTER_SANITIZE_SPECIAL_CHARS);
         $last_name = filter_input(INPUT_POST, 'lastName', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -93,6 +99,7 @@ class UserController
                     'email' => $email,
                     'reg-no' => $reg_no,
                     'level' => $level,
+
                 ]
             ]);
             exit;
@@ -238,6 +245,7 @@ class UserController
             ]);
             exit;
         }
+        // inspectAndDie($user);
         // check if password is correct
         if (!password_verify($password, $user->password)) {
             $errors['email'] = "Incorrect credentials";
@@ -254,7 +262,7 @@ class UserController
             'lastName' => $user->last_name,
             'email' => $user->email,
             'userType' => $user->user_type,
-            'level' => $user->level,
+            'classId' => $user->class_id,
             'reg-no' => $user->reg_no,
             'employee-no' => $user->employee_no,
 

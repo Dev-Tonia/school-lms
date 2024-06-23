@@ -32,7 +32,6 @@ if ($userRole ===  'Lecturer') {
   ]);
 } else if ($userRole === 'Student') {
   loadPartial('student-home', [
-    'scores' => $scores,
     'assignmentsForEachLevel' => $assignmentsForEachLevel,
     'studentSubmissions' => $studentSubmissions
   ]);

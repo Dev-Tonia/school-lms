@@ -20,7 +20,7 @@
     <tbody>
         <?php foreach ($assignments as $assignment) : ?>
             <tr>
-                <td style="white-space: nowrap;"> <?= $assignment['course'] ?></td>
+                <td style="white-space: nowrap;"> <?= $assignment['course_code'] ?></td>
                 <td style="white-space: nowrap;"> <?= $assignment['title'] ?> </td>
                 <td style="min-width:300px;"> <?= $assignment['question'] ?> </td>
                 <td style="white-space: nowrap;"> <?= $assignment['mark_obtainable'] ?> </td>
