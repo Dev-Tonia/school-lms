@@ -27,6 +27,7 @@ if ($user) {
     $router->get('/assignments', 'AssignmentController::index');
     $router->get('/assignments/detail', 'AssignmentController::show');
     $router->post('/auth/logout', 'UserController::logout');
+    $router->get('/assignment/search', 'AssignmentController::search');
 }
 if ($user['userType'] === 'Lecturer' || $user['userType'] ===  'Admin') {
     // Submission Routes both lecturer and admin

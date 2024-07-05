@@ -68,8 +68,8 @@
 
                 <form method="POST" action="/submissions/grade" class="col-8">
 
-                    <input type="hidden" name="sub-id" value="<?= $submission->submission_id ?>">
-                    <input type="number" class="form-control" value="<?= $submission->grade ?>" name="score" id="score">
+                    <input type="hidden" name="sub-id" value="<?= $submission->id ?>">
+                    <input type="number" class="form-control" min="0" value="<?= $submission->mark_obtainable ?>" name="score" id="score">
                     <div class=" col-4 pt-2 pb-4">
                         <button type="submit" class="px-4 py-2 w-100 btn-outline-warning btn text-black fw-medium rounded"> Grade</button>
                     </div>

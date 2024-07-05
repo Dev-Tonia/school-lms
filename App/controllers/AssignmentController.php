@@ -19,45 +19,66 @@ class AssignmentController
     }
     public  function index()
     {
-
+        $user = isset($_SESSION['user']) ? $_SESSION['user'] : '';
         $class = "";
         $lec_id = '';
-        if (isset($_SESSION['user'])) {
+        if ($user) {
 
             // getting the user details 
-            $class =   $_SESSION['user']['classId'];
-            $lec_id =   $_SESSION['user']['userType'] === 'Lecturer' ?  $_SESSION['user']['id'] : '';
+            $class =   $user['classId'];
+            $lec_id =   $user['userType'] === 'Lecturer' ?  $user['id'] : '';
         }
 
-        // getting all the assignments for the lectures
+        $limit = 2;  // create a limit
+        $page = isset($_GET['page']) ? $_GET['page'] : 1;
+        $start = ($page - 1) * $limit; // setting the offset
 
-        $assignments = $this->db->query(' SELECT 
-            a.id ,
-            a.user_id, 
-            a.title, 
-            a.question, 
-            a.mark_obtainable, 
-            a.due_date, 
-            a.class_id, 
-            c.class_name, 
-            a.course_id, 
-            co.course_code   FROM 
-            assignment a
-        LEFT JOIN 
-            classes c ON a.class_id = c.id
-        LEFT JOIN 
-            courses co ON a.course_id = co.id
-    ')->fetchAll();
+        // getting all the assignment with out limit, this will enable to the count of the items in the assignment
+        $assignmentsForCount = $this->db->query(" SELECT 
+         a.id ,a.user_id, a.title, a.question, a.mark_obtainable, a.due_date, a.class_id, c.class_name, a.course_id, co.course_code  
+          FROM assignment a
+          LEFT JOIN classes c ON a.class_id = c.id
+          LEFT JOIN courses co ON a.course_id = co.id ")->fetchAll();
+        $totalAssignment = count($assignmentsForCount);
+
 
         // filtering all the assignment to get each level assignment
-        $filterAssignmentForStudent = array_filter($assignments, function ($assignment) use ($class) {
+        $totalStudentAssignment = count(array_filter($assignmentsForCount, function ($assignment) use ($class) {
             return $assignment->class_id === $class;
-        });
+        }));
 
         // filtering all the assignment to get each level assignment
-        $filterAssignmentForEachLecture = array_filter($assignments, function ($assignment) use ($lec_id) {
+        $totalLectureAssignment = count(array_filter($assignmentsForCount, function ($assignment) use ($lec_id) {
             return $assignment->user_id === $lec_id;
-        });
+        }));
+
+
+        // getting all the assignments with limit 
+        $assignments = $this->db->query(" SELECT 
+            a.id , a.user_id,  a.title,  a.question,  a.mark_obtainable,  a.due_date,  a.class_id,  c.class_name,  a.course_id,  co.course_code  
+             FROM  assignment a
+             LEFT JOIN classes c ON a.class_id = c.id
+             LEFT JOIN courses co ON a.course_id = co.id 
+             LIMIT $start , $limit ")->fetchAll();
+
+        // getting assignment specific to a lecturer
+        $filterAssignmentForEachLecture = $this->db->query(" SELECT 
+           a.id , a.user_id,  a.title,  a.question,  a.mark_obtainable,  a.due_date,  a.class_id,  c.class_name,  a.course_id,  co.course_code  
+           FROM  assignment a
+           LEFT JOIN classes c ON a.class_id = c.id
+           LEFT JOIN courses co ON a.course_id = co.id 
+           WHERE user_id = :id
+           LIMIT $start , $limit ", ['id' => $lec_id])->fetchAll();
+
+        // filtering all the assignment to get each level assignment
+        $filterAssignmentForStudent =  $this->db->query(" SELECT 
+           a.id , a.user_id,  a.title,  a.question,  a.mark_obtainable,  a.due_date,  a.class_id,  c.class_name,  a.course_id,  co.course_code  
+           FROM  assignment a
+           LEFT JOIN classes c ON a.class_id = c.id
+           LEFT JOIN courses co ON a.course_id = co.id 
+           WHERE a.class_id = :class
+           LIMIT $start , $limit ", ['class' => $class])->fetchAll();
+
 
         // getting all submission
         $submissions = $this->db->query('SELECT  s.id AS submission_id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
@@ -70,9 +91,145 @@ class AssignmentController
 
 
         $assignmentsForEachStudent = getGradesForAssignments(assignments: $filterAssignmentForStudent, submissions: $submissions);
+        // set the page total depending on the user role
+        $totalPage = 0;
+        if ($user['userType'] === 'Admin') {
+            $totalPage = ceil($totalAssignment / $limit);
+        } else if ($user['userType'] === 'Lecturer') {
+            $totalPage = ceil($totalLectureAssignment / $limit);
+        } else if ($user['userType'] === 'Student') {
+            $totalPage = ceil($totalStudentAssignment / $limit);
+        }
+        $prev = max($page - 1, 1);
+        $next = min($page + 1, $totalPage);
 
         loadView('assignments/index', [
             'allAssignments' => $assignments,
+            'totalPage' => $totalPage,
+            'prev' => $prev,
+            'next' => $next,
+            'page' => $page,
+            'assignmentsForEachStudent' => $assignmentsForEachStudent,
+            'assignmentsForEachLecture' => $filterAssignmentForEachLecture,
+        ]);
+    }
+
+    public function search()
+    {
+        $user = isset($_SESSION['user']) ? $_SESSION['user'] : '';
+        $class = "";
+        $lec_id = '';
+        if ($user) {
+
+            // getting the user details 
+            $class =   $user['classId'];
+            $lec_id =   $user['userType'] === 'Lecturer' ?  $user['id'] : '';
+        }
+        $limit = 2;  // create a limit
+        $page = isset($_GET['page']) ? $_GET['page'] : 1;
+        $start = ($page - 1) * $limit; // setting the offset
+
+        $searchResult = $searchTerm = '';
+
+        if (isset($_GET['search'])) {
+            $searchResult = htmlspecialchars($_GET['search']);
+            $searchTerm = '%' . $searchResult . '%';
+        }
+        if ($searchResult === '' || trim($searchResult) === '') {
+            redirect('/assignments');
+            exit;
+        }
+        $params = [
+            'searchTitle' => $searchTerm,
+            'searchQuestion' => $searchTerm,
+            'searchClassName' => $searchTerm,
+
+        ];
+
+        // getting all the assignment with out limit, this will enable to the count of the items in the assignment
+        $assignmentsForCount = $this->db->query(" SELECT 
+         a.id ,a.user_id, a.title, a.question, a.mark_obtainable, a.due_date, a.class_id, c.class_name, a.course_id, co.course_code  
+          FROM assignment a
+          LEFT JOIN classes c ON a.class_id = c.id
+          LEFT JOIN courses co ON a.course_id = co.id
+           WHERE 
+            (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName ) ", $params)->fetchAll();
+        $totalAssignment = count($assignmentsForCount);
+
+
+        // filtering all the assignment to get each level assignment
+        $totalStudentAssignment = count(array_filter($assignmentsForCount, function ($assignment) use ($class) {
+            return $assignment->class_id === $class;
+        }));
+
+        // filtering all the assignment to get each level assignment
+        $totalLectureAssignment = count(array_filter($assignmentsForCount, function ($assignment) use ($lec_id) {
+            return $assignment->user_id === $lec_id;
+        }));
+
+
+        // getting all the assignments with limit 
+        $assignments = $this->db->query(" SELECT 
+            a.id, a.user_id, a.title, a.question, a.mark_obtainable, a.due_date, a.class_id, c.class_name, a.course_id, co.course_code  
+          FROM 
+            assignment a
+          LEFT JOIN 
+            classes c ON a.class_id = c.id
+          LEFT JOIN 
+            courses co ON a.course_id = co.id 
+        WHERE 
+            (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName )
+             LIMIT $start , $limit ", $params)->fetchAll();
+
+        // getting assignment specific to a lecturer
+        $filterAssignmentForEachLecture = $this->db->query(" SELECT 
+        a.id , a.user_id,  a.title,  a.question,  a.mark_obtainable,  a.due_date,  a.class_id,  c.class_name,  a.course_id,  co.course_code  
+        FROM  assignment a
+        LEFT JOIN classes c ON a.class_id = c.id
+        LEFT JOIN courses co ON a.course_id = co.id 
+        WHERE user_id = :id 
+        AND (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName )
+        LIMIT $start , $limit ",  ['id' => $lec_id, ...$params])->fetchAll();
+
+        // filtering all the assignment to get each level assignment
+        $filterAssignmentForStudent =  $this->db->query(" SELECT 
+           a.id , a.user_id,  a.title,  a.question,  a.mark_obtainable,  a.due_date,  a.class_id,  c.class_name,  a.course_id,  co.course_code  
+         FROM  assignment a
+         LEFT JOIN classes c ON a.class_id = c.id
+         LEFT JOIN courses co ON a.course_id = co.id 
+         WHERE a.class_id = :class
+         AND (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName )
+         LIMIT $start , $limit ", ['class' => $class, ...$params])->fetchAll();
+
+        // getting all submission
+        $submissions = $this->db->query('SELECT  s.id AS submission_id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
+   a.title, a.question, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
+    FROM  submissions s 
+    JOIN users u ON s.user_id = u.id
+    JOIN assignment a ON s.assignment_id = a.id 
+    LEFT JOIN  classes c ON a.class_id = c.id
+    LEFT JOIN  courses co ON a.course_id = co.id')->fetchAll();
+
+
+        $assignmentsForEachStudent = getGradesForAssignments(assignments: $filterAssignmentForStudent, submissions: $submissions);
+        // set the page total depending on the user role
+        $totalPage = 0;
+        if ($user['userType'] === 'Admin') {
+            $totalPage = ceil($totalAssignment / $limit);
+        } else if ($user['userType'] === 'Lecturer') {
+            $totalPage = ceil($totalLectureAssignment / $limit);
+        } else if ($user['userType'] === 'Student') {
+            $totalPage = ceil($totalStudentAssignment / $limit);
+        }
+        $prev = max($page - 1, 1);
+        $next = min($page + 1, $totalPage);
+
+        loadView('assignments/index', [
+            'allAssignments' => $assignments,
+            'totalPage' => $totalPage,
+            'prev' => $prev,
+            'next' => $next,
+            'page' => $page,
             'assignmentsForEachStudent' => $assignmentsForEachStudent,
             'assignmentsForEachLecture' => $filterAssignmentForEachLecture,
         ]);
@@ -102,23 +259,12 @@ class AssignmentController
         // getting all the assignments
         $this->assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $assParams)->fetch();
         $assignment = $this->db->query(' SELECT 
-            a.id ,
-            a.user_id, 
-            a.title, 
-            a.question, 
-            a.mark_obtainable, 
-            a.due_date, 
-            a.class_id, 
-            c.class_name, 
-            a.course_id, 
-            a.created_at,
-            co.course_code   FROM 
-            assignment a
-        LEFT JOIN 
-            classes c ON a.class_id = c.id
-        LEFT JOIN 
-            courses co ON a.course_id = co.id
-    WHERE a.id = :id', $assParams)->fetch();
+            a.id , a.user_id, a.title, a.question, a.mark_obtainable, a.due_date, a.class_id, c.class_name, a.course_id, a.created_at, co.course_code 
+             FROM  assignment a
+             LEFT JOIN classes c ON a.class_id = c.id
+             LEFT JOIN  courses co ON a.course_id = co.id
+             WHERE a.id = :id', $assParams)->fetch();
+
         // Check if listing exists
         if (!$this->assignment) {
             ErrorController::notFound('assignment not found');
@@ -139,12 +285,6 @@ class AssignmentController
             'isSubmitted' => $isSubmitted
         ]);
     }
-
-    /**
-     * Store data to the database
-     *
-     * @return void
-     */
     public function store()
     {
         $class    = filter_input(INPUT_POST, 'class', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -201,8 +341,6 @@ class AssignmentController
             ]);
             exit;
         }
-
-
         // Create user account
         $params = [
             'title' => $title,
@@ -284,8 +422,6 @@ class AssignmentController
         if (!isset($_SESSION['user'])) {
             redirect('/');
         }
-
-
         $errors = [];
         // validate the user input
         if (!Validation::string($class)) {
@@ -307,11 +443,8 @@ class AssignmentController
             $errors['markObtainable'] = 'Obtainable mark is required';
         }
 
-
         // getting all the assignments
         $assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', ['id' => $id])->fetch();
-
-
         // check to make sure there is no error.
         if (!empty($errors)) {
             loadView('/assignments/create', [

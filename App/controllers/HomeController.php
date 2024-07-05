@@ -18,11 +18,16 @@ class HomeController
     {
         $id = '';
         $class = "";
-
+        $user = '';
         if (isset($_SESSION['user'])) {
             // getting the user details 
-            $id = $_SESSION['user']['id'];
-            $class =  $_SESSION['user']['classId'];
+            $user =  $_SESSION['user'];
+            $id = $user['id'];
+            $class =  $user['classId'];
+        }
+        if (!$user) {
+            loadView('landing');
+            exit;
         }
         // getting all the assignment 
         $assignments = $this->db->query(' SELECT 
@@ -53,18 +58,22 @@ class HomeController
         });
 
         // getting all scores for the student  
-
-        $submissions = $this->db->query('SELECT  s.id AS submission_id, s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
-        a.title, a.question, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
+        $allSubmissions = $this->db->query("SELECT  s.id , s.user_id  , s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
+        a.title, a.question, a.user_id AS assignment_creator, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
          FROM  submissions s 
          JOIN users u ON s.user_id = u.id
          JOIN assignment a ON s.assignment_id = a.id 
          LEFT JOIN  classes c ON a.class_id = c.id
-         LEFT JOIN  courses co ON a.course_id = co.id')->fetchAll();
+         LEFT JOIN  courses co ON a.course_id = co.id 
+         LIMIT 10")->fetchAll();
+
+        $lectureSubmission = array_filter($allSubmissions, function ($submission) use ($id) {
+            return $submission->assignment_creator === $id;
+        });
 
 
         // filtering all the submission to get each student submission
-        $studentSubmissions = array_filter($submissions, function ($submission) use ($id) {
+        $studentSubmissions = array_filter($allSubmissions, function ($submission) use ($id) {
             return $submission->user_id === $id;
         });
         $paramForUserRole = [
@@ -72,17 +81,21 @@ class HomeController
         ];
         // Select all student
         $students = $this->db->query('SELECT * FROM users WHERE user_type = :user_type', $paramForUserRole)->fetchAll();
+        $submissions = '';
+        if ($user['userType'] === 'Admin') {
+            $submissions = $allSubmissions;
+        } else if ($user['userType'] === 'Lecturer') {
+            $submissions = $lectureSubmission;
+        }
 
 
-        $isLogin = isset($_SESSION['user']);
-        $isLogin ?
-            loadView('home', [
-                'assignmentsFormEachLectures' => $assignmentsByLecturer,
-                'assignmentsForEachLevel' => $assignmentsForEachLevel,
-                'submissions' => $submissions,
-                'studentSubmissions' => $studentSubmissions,
-                'allAssignment' => $assignments,
-                'allStudent' => $students,
-            ]) : loadView('landing');
+        loadView('home', [
+            'assignmentsFormEachLectures' => $assignmentsByLecturer,
+            'assignmentsForEachLevel' => $assignmentsForEachLevel,
+            'submissions' => $submissions,
+            'studentSubmissions' => $studentSubmissions,
+            'allAssignment' => $assignments,
+            'allStudent' => $students,
+        ]);
     }
 }

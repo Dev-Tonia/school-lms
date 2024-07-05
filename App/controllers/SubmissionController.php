@@ -17,18 +17,63 @@ class SubmissionController
     }
     public  function index()
     {
-        $submissions = $this->db->query('SELECT  s.id , s.user_id, s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
-        a.title, a.question, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
+        $user = isset($_SESSION['user']) ? $_SESSION['user'] : '';
+        $lec_id =   $user['userType'] === 'Lecturer' ?  $user['id'] : '';
+
+        $limit = 2;  // create a limit
+        $page = isset($_GET['page']) ? $_GET['page'] : 1;
+        $start = ($page - 1) * $limit;
+
+        $submissionForCount = $this->db->query('SELECT  s.id , s.user_id  , s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
+        a.title, a.question, a.user_id AS assignment_creator, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
          FROM  submissions s 
          JOIN users u ON s.user_id = u.id
          JOIN assignment a ON s.assignment_id = a.id 
          LEFT JOIN  classes c ON a.class_id = c.id
-         LEFT JOIN  courses co ON a.course_id = co.id')->fetchAll();
+         LEFT JOIN  courses co ON a.course_id = co.id ORDER BY s.created_at DESC ')->fetchAll();
+        $totalSubmissions = count($submissionForCount);
+
+        // filtering all the assignment to get each level assignment
+        $totalLectureSubmission = count(array_filter($submissionForCount, function ($submission) use ($lec_id) {
+            return $submission->assignment_creator === $lec_id;
+        }));
+
+        $allSubmissions = $this->db->query("SELECT  s.id , s.user_id  , s.assignment_id, s.file_path, s.grade, s.created_at, u.first_name, u.last_name, 
+        a.title, a.question, a.user_id AS assignment_creator, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_id,   c.class_name,    co.id AS course_id,   co.course_code
+         FROM  submissions s 
+         JOIN users u ON s.user_id = u.id
+         JOIN assignment a ON s.assignment_id = a.id 
+         LEFT JOIN  classes c ON a.class_id = c.id
+         LEFT JOIN  courses co ON a.course_id = co.id 
+         LIMIT $start , $limit ")->fetchAll();
+
+        $lectureSubmission = array_filter($allSubmissions, function ($submission) use ($lec_id) {
+            return $submission->assignment_creator === $lec_id;
+        });
+
+
+
+        $totalPage = 0;
+        $submissions = '';
+        if ($user['userType'] === 'Admin') {
+            $totalPage = ceil($totalSubmissions / $limit);
+            $submissions = $allSubmissions;
+        } else if ($user['userType'] === 'Lecturer') {
+            $totalPage = ceil($totalLectureSubmission / $limit);
+            $submissions = $lectureSubmission;
+        }
+
+        $prev = max($page - 1, 1);
+        $next = min($page + 1, $totalPage);
+
 
         loadView('submissions/index', [
             'submissions' => $submissions,
+            'totalPage' => $totalPage,
+            'prev' => $prev,
+            'next' => $next,
+            'page' => $page,
         ]);
-        // loadView('assignments/index');
     }
 
     public  function show()
@@ -80,15 +125,15 @@ a.title, a.question, a.course_id, a.class_id, a.mark_obtainable,  c.id AS class_
         $assParams = [
             'id' => $submission->assignment_id,
         ];
-        $assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $assParams)->fetch();
 
+
+        $assignment = $this->db->query('SELECT * FROM assignment WHERE id = :id', $assParams)->fetch();
 
         if ($score > $assignment->mark_obtainable) {
             $_SESSION['error'] = [
                 'errorMessage' => 'Score is greater than the total mark obtainable'
             ];
             redirect('/submissions');
-            exit;
         }
 
 

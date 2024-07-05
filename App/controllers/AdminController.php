@@ -45,11 +45,7 @@ class AdminController
         LEFT JOIN 
             classes c ON u.class_id = c.id WHERE user_type = :user_type', $paramForUserRole)->fetchAll();
 
-        //     $stmt = $this->db->prepare('
 
-        //     WHERE 
-        //         u.user_type = :user_type
-        // ');
 
 
         loadView('admin/students', [
@@ -66,14 +62,12 @@ class AdminController
 
         $params = [
             'class_name' => $class,
-
         ];
+
         $this->db->query('INSERT INTO classes (class_name ) VALUES ( :class_name)', $params);
 
         redirect('/admin/classes');
     }
-
-
     public function addCourse()
     {
 
@@ -114,7 +108,6 @@ class AdminController
     public function deleteCourse()
     {
         $courseId = $_POST['id']; //this is coming from the hidden input in the submit form
-        // inspectAndDie($classId);
         if (!$courseId) {
             // redirect users
             redirect(

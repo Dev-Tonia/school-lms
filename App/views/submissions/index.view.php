@@ -45,6 +45,21 @@
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php if ($totalPage > 1) : ?>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item <?= $page === 1 ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="/submissions?page=<?= $prev ?>" <?= $page === 1 ? 'aria-disabled="true" tabindex="-1"' : ''; ?>>Previous</a>
+                </li>
+                <?php for ($i = 1; $i <= $totalPage; $i++) : ?>
+                    <li class="page-item"><a class="page-link" href="/submissions?page=<?= $i ?>"><?= $i ?></a></li>
+                <?php endfor; ?>
+                <li class="page-item <?= $totalPage === $next ? 'disabled' : ''; ?>"><a class="page-link" href="/submissions?page=<?= $next ?>" <?= $totalPage == $next ? 'aria-disabled="true" tabindex="-1"' : ''; ?>>Next</a></li>
+
+            </ul>
+        </nav>
+    <?php endif; ?>
 </section>
 </div>
 

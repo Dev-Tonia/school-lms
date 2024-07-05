@@ -11,7 +11,6 @@ if ($user === 'Lecturer') {
 }
 
 
-
 ?>
 <div class="">
   <div class=" d-flex justify-content-between align-items-center ">
@@ -29,11 +28,36 @@ if ($user === 'Lecturer') {
   </div>
 </div>
 
-
 <section class=" px-2 py-2 shadow my-5 table-responsive rounded bg-success bg-opacity-10">
+  <div class="row pb-4">
+    <form class="container-fluid col-6 py-3" method="get" action="/assignment/search">
+      <div class="input-group ">
+        <input type="text" class="form-control" placeholder="Search...." name="search" aria-label="search" aria-describedby="basic-addon1" required />
+        <button type="submit" class="input-group-text " id="basic-addon1">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </form>
+    <!-- <div class="col-4"></div> -->
+    <div class="col-6 d-flex align-items-center justify-content-end">
+      <div class="col-6">
+        <select class="form-select" aria-label="Default select example">
+          <option selected>Filter</option>
+          <option value="Now Playing">Now Playing</option>
+          <option value="Popular">Popular</option>
+          <option value="Top Rated">Top Rated</option>
+          <option value="Up Coming ">Up Coming</option>
+        </select>
+      </div>
+    </div>
+  </div>
   <?php if ($user === 'Student') : ?>
     <?php
     loadPartial('student-table', [
+      'prev' => $prev,
+      'next' => $next,
+      'page' => $page,
+      'totalPage' => $totalPage,
       'assignments' => $assignmentsForEachStudent
     ])
     ?>
@@ -50,6 +74,7 @@ if ($user === 'Lecturer') {
         </tr>
       </thead>
       <tbody>
+
         <?php foreach ($assignments as $assignment) : ?>
           <tr>
             <td style="white-space: nowrap;"> <?= $assignment->course_code ?></td>
@@ -63,7 +88,25 @@ if ($user === 'Lecturer') {
         <?php endforeach; ?>
       </tbody>
     </table>
+
   <?php endif ?>
+  <?php if ($totalPage > 1) : ?>
+
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+        <li class="page-item <?= $page === 1 ? 'disabled' : ''; ?>">
+          <a class="page-link" href="/assignments?page=<?= $prev ?>" <?= $page === 1 ? 'aria-disabled="true" tabindex="-1"' : ''; ?>>Previous</a>
+        </li>
+        <?php for ($i = 1; $i <= $totalPage; $i++) : ?>
+          <li class="page-item"><a class="page-link" href="/assignments?page=<?= $i ?>"><?= $i ?></a></li>
+        <?php endfor; ?>
+        <li class="page-item <?= $totalPage === $next ? 'disabled' : ''; ?>">
+          <a class="page-link" href="/assignments?page=<?= $next ?>" <?= $totalPage == $next ? 'aria-disabled="true" tabindex="-1"' : ''; ?>>Next</a>
+        </li>
+
+      </ul>
+    </nav>
+  <?php endif; ?>
 
 </section>
 
