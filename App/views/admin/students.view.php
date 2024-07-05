@@ -16,6 +16,18 @@ loadPartial('layout');
 
 
 <section class=" px-2 py-2 shadow my-5 table-responsive rounded bg-success bg-opacity-10">
+    <div class="row pb-4">
+        <form class="container-fluid col-6 py-3" method="get" action="/admin/students/search">
+            <div class="input-group ">
+                <input type="text" class="form-control" placeholder="Search...." name="search" aria-label="search" aria-describedby="basic-addon1" required />
+                <button type="submit" class="input-group-text " id="basic-addon1">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+        <!-- <div class="col-4"></div> -->
+
+    </div>
 
     <table class="table table-light">
         <thead>
@@ -43,6 +55,23 @@ loadPartial('layout');
             <?php endforeach; ?>
         </tbody>
     </table>
+    <?php if ($totalPage > 1) : ?>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item <?= $page === 1 ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="/admin/students?page=<?= $prev ?>" <?= $page === 1 ? 'aria-disabled="true" tabindex="-1"' : ''; ?>>Previous</a>
+                </li>
+                <?php for ($i = 1; $i <= $totalPage; $i++) : ?>
+                    <li class="page-item"><a class="page-link" href="/admin/students?page=<?= $i ?>"><?= $i ?></a></li>
+                <?php endfor; ?>
+                <li class="page-item <?= $totalPage === $next ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="/admin/students?page=<?= $next ?>" <?= $totalPage == $next ? 'aria-disabled="true" tabindex="-1"' : ''; ?>>Next</a>
+                </li>
+
+            </ul>
+        </nav>
+    <?php endif; ?>
 </section>
 
 <?php

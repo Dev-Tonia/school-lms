@@ -143,6 +143,7 @@ class AssignmentController
             'searchTitle' => $searchTerm,
             'searchQuestion' => $searchTerm,
             'searchClassName' => $searchTerm,
+            'searchCourseCode' => $searchTerm,
 
         ];
 
@@ -153,7 +154,7 @@ class AssignmentController
           LEFT JOIN classes c ON a.class_id = c.id
           LEFT JOIN courses co ON a.course_id = co.id
            WHERE 
-            (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName ) ", $params)->fetchAll();
+            (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName  OR co.course_code LIKE :searchCourseCode ) ", $params)->fetchAll();
         $totalAssignment = count($assignmentsForCount);
 
 
@@ -178,7 +179,7 @@ class AssignmentController
           LEFT JOIN 
             courses co ON a.course_id = co.id 
         WHERE 
-            (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName )
+            (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName OR co.course_code LIKE :searchCourseCode )
              LIMIT $start , $limit ", $params)->fetchAll();
 
         // getting assignment specific to a lecturer
@@ -188,7 +189,7 @@ class AssignmentController
         LEFT JOIN classes c ON a.class_id = c.id
         LEFT JOIN courses co ON a.course_id = co.id 
         WHERE user_id = :id 
-        AND (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName )
+        AND (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName OR co.course_code LIKE :searchCourseCode)
         LIMIT $start , $limit ",  ['id' => $lec_id, ...$params])->fetchAll();
 
         // filtering all the assignment to get each level assignment
@@ -198,7 +199,7 @@ class AssignmentController
          LEFT JOIN classes c ON a.class_id = c.id
          LEFT JOIN courses co ON a.course_id = co.id 
          WHERE a.class_id = :class
-         AND (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName )
+         AND (a.title LIKE :searchTitle  OR a.question LIKE :searchQuestion  OR c.class_name LIKE :searchClassName OR co.course_code LIKE :searchCourseCode )
          LIMIT $start , $limit ", ['class' => $class, ...$params])->fetchAll();
 
         // getting all submission

@@ -54,6 +54,7 @@ if ($user['userType'] === 'Admin') {
     $router->get('/admin/classes', 'AdminController::classes');
     $router->get('/admin/courses', 'AdminController::courses');
     $router->get('/admin/students', 'AdminController::student');
+    $router->get('/admin/students/search', 'AdminController::search');
 
     $router->post('/admin/classes', 'AdminController::addClass');
     $router->post('/admin/courses', 'AdminController::addCourse');

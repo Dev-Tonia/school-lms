@@ -39,17 +39,7 @@ if ($user === 'Lecturer') {
       </div>
     </form>
     <!-- <div class="col-4"></div> -->
-    <div class="col-6 d-flex align-items-center justify-content-end">
-      <div class="col-6">
-        <select class="form-select" aria-label="Default select example">
-          <option selected>Filter</option>
-          <option value="Now Playing">Now Playing</option>
-          <option value="Popular">Popular</option>
-          <option value="Top Rated">Top Rated</option>
-          <option value="Up Coming ">Up Coming</option>
-        </select>
-      </div>
-    </div>
+
   </div>
   <?php if ($user === 'Student') : ?>
     <?php

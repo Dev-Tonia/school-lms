@@ -37,19 +37,120 @@ class AdminController
         $paramForUserRole = [
             'user_type' => 'Student',
         ];
+        $limit = 2;  // create a limit
+        $page = isset($_GET['page']) ? $_GET['page'] : 1;
+        $start = ($page - 1) * $limit; // setting the offset
+
         // Select all student
-        $students = $this->db->query(' SELECT  u.id AS user_id,  u.first_name,  u.last_name,  u.email,  u.reg_no,  u.employee_no,  u.user_type,  u.created_at  ,
+        $totalStudent = $this->db->query(' SELECT  u.id AS user_id,  u.first_name,  u.last_name,  u.email,  u.reg_no,  u.employee_no,  u.user_type,  u.created_at  ,
             c.class_name
         FROM 
             users u
         LEFT JOIN 
             classes c ON u.class_id = c.id WHERE user_type = :user_type', $paramForUserRole)->fetchAll();
+        $totalStudent = count($totalStudent);
 
+        $students = $this->db->query(
+            "SELECT  
+            u.id AS user_id,  
+            u.first_name,  
+            u.last_name,  
+            u.email,  
+            u.reg_no,  
+            u.employee_no,  
+            u.user_type,  
+            u.created_at,  
+            c.class_name
+        FROM  
+            users u
+        LEFT JOIN 
+            classes c ON u.class_id = c.id
+        WHERE 
+            u.user_type = :user_type
+        LIMIT 
+            $start, $limit",
+            $paramForUserRole
+        )->fetchAll();
 
+        $totalPage = $totalStudent / $limit;
 
+        $prev = max($page - 1, 1);
+        $next = min($page + 1, $totalPage);
 
         loadView('admin/students', [
-            'students' => $students
+            'students' => $students,
+            'totalPage' => $totalPage,
+            'prev' => $prev,
+            'next' => $next,
+            'page' => $page,
+        ]);
+    }
+    public function search()
+    {
+
+        $limit = 2;  // create a limit
+        $page = isset($_GET['page']) ? $_GET['page'] : 1;
+        $start = ($page - 1) * $limit; // setting the offset
+
+
+        $searchResult = $searchTerm = '';
+
+        if (isset($_GET['search'])) {
+            $searchResult = htmlspecialchars($_GET['search']);
+            $searchTerm = '%' . $searchResult . '%';
+        }
+        if ($searchResult === '' || trim($searchResult) === '') {
+            redirect('/admin/students');
+            exit;
+        }
+        $paramForUserRole = [
+            'user_type' => 'Student',
+            'searchName' => $searchTerm,
+            'searchEmail' => $searchTerm,
+            'searchReg' => $searchTerm,
+
+        ];
+        // Select all student
+        $totalStudent = $this->db->query(' SELECT  u.id AS user_id,  u.first_name,  u.last_name,  u.email,  u.reg_no,  u.employee_no,  u.user_type,  u.created_at  ,
+            c.class_name
+        FROM 
+            users u
+        LEFT JOIN 
+            classes c ON u.class_id = c.id
+             WHERE user_type = :user_type AND   (u.first_name LIKE :searchName OR u.email LIKE :searchEmail OR u.reg_no LIKE :searchReg )', $paramForUserRole)->fetchAll();
+        $totalStudent = count($totalStudent);
+
+        $students = $this->db->query(
+            "SELECT  
+            u.id AS user_id,  
+            u.first_name,  
+            u.last_name,  
+            u.email,  
+            u.reg_no,  
+            u.employee_no,  
+            u.user_type,  
+            u.created_at,  
+            c.class_name
+        FROM  
+            users u
+        LEFT JOIN 
+            classes c ON u.class_id = c.id
+       WHERE user_type = :user_type AND   (u.first_name LIKE :searchName OR u.email LIKE :searchEmail OR u.reg_no LIKE :searchReg )
+        LIMIT 
+            $start, $limit",
+            $paramForUserRole
+        )->fetchAll();
+        $totalPage = $totalStudent / $limit;
+
+        $prev = max($page - 1, 1);
+        $next = min($page + 1, $totalPage);
+
+        loadView('admin/students', [
+            'students' => $students,
+            'totalPage' => $totalPage,
+            'prev' => $prev,
+            'next' => $next,
+            'page' => $page,
         ]);
     }
     public function addClass()
