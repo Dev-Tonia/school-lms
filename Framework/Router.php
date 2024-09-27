@@ -17,13 +17,7 @@ class Router
      * @param string $action
      * @return void
      */
-    /*
-     string $controller::: initial this router file is taking in the full path of the controller.
-     But currently we refactoring it so that will can be able to use class base for our controllers instead of files...........
 
-     Now it will accepts $action. $action is giving us the controller and the method we want to call
-
-     */
     public function registerRoute($method, $uri, $action)
     {
         // in php we use list() for destructuring of arrays
@@ -87,13 +81,7 @@ class Router
      * @param string $$method
      * @return void
      */
-    /* 
-        Because we have refactor our route register,
-        1. we are going to extract the controller  and controller method here
-        Note:: we are going to pull in the controller from the namespace as it was define in psr-4
-        and then concatenate the route controller coming from our route register..
-        2. we are going to instantiate the controller and call the method
-    */
+
 
     public function route($uri, $method)
     {
@@ -105,24 +93,10 @@ class Router
                 // Instantiate the controller and call the method
                 $controllerInstance = new $controller();
                 // calling the method associated to the class
-                $controllerInstance->$controllerMethod(); //  .I'm calling it this way because I want to use static for all my function. if not we can call the function $controllerInstance->$controllerMethod()
-                // require basePath('App/' . $route['controller']); //this was when the controller is still class based.........
+                $controllerInstance->$controllerMethod();
                 return;
             }
         }
         ErrorController::notFound();
     }
 }
-
-// this is a basic routing in php
-// $routes =   require basePath('routes.php');
-
-/*
-// checking if the superGlobals exist
-
-if (array_key_exists($uri, $routes)) {
-    require(basePath($routes[$uri]));
-} else {
-    require basePath($routes['404']);
-}
-*/
